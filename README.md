@@ -8,3 +8,4 @@ KCCs do not propose changes to Kaspa consensus or core-node behavior. Such chang
 
 | Number | Category | Title | Author | Status |
 |--------|----------|-------|--------|--------|
+| 0402 | Covenant convention | Covenant Payment Channels | Kali123411 | Draft |
