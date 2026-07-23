@@ -8,3 +8,4 @@ KCCs do not propose changes to Kaspa consensus or core-node behavior. Such chang
 
 | Number | Category | Title | Author | Status |
 |--------|----------|-------|--------|--------|
+| [KCC-0021](kcc-0021.md) | Covenant | Covenant Token Metadata Specification | 0xKnitser | Draft |
