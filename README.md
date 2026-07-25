@@ -10,7 +10,7 @@ KCCs do not propose changes to Kaspa consensus or core-node behavior. Such chang
 
 ## Overview
 
-This PR proposes 16 KCCs across three layers, building on the KCC-0020 transfer convention (Manyfest, IzioDev). Together they define a complete covenant token and commerce infrastructure for the Kaspa ecosystem.
+This PR proposes 16 KCCs across three layers, building on the KCC-0020 transfer convention. Together they define a complete covenant token and commerce infrastructure for the Kaspa ecosystem.
 
 ### Layer 1: Token Standards (KCC-0008 through 0015)
 
@@ -65,7 +65,7 @@ Two sub-conventions: UCP600 (letters of credit, 5-day examination window, hash-b
 | 0001 | IzioDev | Covenant definition, byte layout, Program ABI — cross-referenced in KCC-0016 |
 | 0002 | IzioDev | Control principal references — `identifier_type` maps to this concept |
 | 0020 | Manyfest, IzioDev | KCC-0020 transfer convention — foundation layer extended by all token specs |
-| 0021 | Knitser | Metadata convention (live on kascov) — referenced by KCC-0008 metadata_uri |
+| 0021 | Knitser | Metadata convention — referenced by KCC-0008 metadata_uri |
 | 0402 | Kali123411 | Payment channels — complementary infrastructure |
 
 ---
