@@ -44,6 +44,10 @@ status       enum       // ACTIVE, REVOKED, EXPIRED, BURNED
 | Membership | DAO member | Governance |
 | Accreditation | Accredited investor | SAFT, RWA Token |
 
+## Encoding
+
+For the technical encoding of transfer operations, state field ordering, witness semantics, and positional input/output pairing, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev). This standard defines the interface; KCC-0020 defines the byte-level implementation.
+
 ## Rules
 
 1. `holder` is immutable after `issue`. No transfer entrypoint exists.

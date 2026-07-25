@@ -49,6 +49,10 @@ status             enum       // PENDING, MET, FAILED, EXPIRED
 - **Milestone escrow**: payment released on delivery confirmation
 - **Prediction market**: claim payout on oracle-reported outcome
 
+## Encoding
+
+For the technical encoding of transfer operations, state field ordering, witness semantics, and positional input/output pairing, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev). This standard defines the interface; KCC-0020 defines the byte-level implementation.
+
 ## Rules
 
 1. Condition parameters are immutable after deployment.

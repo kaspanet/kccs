@@ -63,6 +63,10 @@ proposals: [{
 - **Escrow**: buyer, seller, arbitrator — 2 of 3 to release
 - **Inheritance fund**: 3 of 5 heirs to access
 
+## Encoding
+
+For the technical encoding of transfer operations, state field ordering, witness semantics, and positional input/output pairing, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev). This standard defines the interface; KCC-0020 defines the byte-level implementation.
+
 ## Rules
 
 1. Governor set and quorum are immutable after deployment.

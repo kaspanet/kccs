@@ -54,6 +54,10 @@ clawback_enabled    bool
 | Payroll | Streaming | No |
 | Subscription | Streaming | No |
 
+## Encoding
+
+For the technical encoding of transfer operations, state field ordering, witness semantics, and positional input/output pairing, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev). This standard defines the interface; KCC-0020 defines the byte-level implementation.
+
 ## Rules
 
 1. `holder` is immutable — vested tokens cannot be transferred pre-vest.

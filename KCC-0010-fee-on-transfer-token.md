@@ -45,6 +45,10 @@ Sum of all `bps` must be ≤ 10000. Fees are deducted from the sent amount — t
 | Charity | `[{charity: 300}]` | Verifiable donation |
 | Affiliate | `[{referrer: 100}]` | 1% trustless commission |
 
+## Encoding
+
+For the technical encoding of transfer operations, state field ordering, witness semantics, and positional input/output pairing, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev). This standard defines the interface; KCC-0020 defines the byte-level implementation.
+
 ## Rules
 
 1. `fee_schedule` is immutable after first `set_fee_schedule`.

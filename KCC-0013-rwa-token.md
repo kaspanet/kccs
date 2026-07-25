@@ -46,6 +46,10 @@ Additional state: `debtor, face_value, due_date, invoice_hash`. Income: discount
 ### Carbon Credits
 Additional state: `registry, vintage, project_type, serial`. No income. Redemption: retire credit.
 
+## Encoding
+
+For the technical encoding of transfer operations, state field ordering, witness semantics, and positional input/output pairing, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev). This standard defines the interface; KCC-0020 defines the byte-level implementation.
+
 ## Rules
 
 1. Minting requires oracle attestation of asset existence.
