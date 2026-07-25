@@ -28,7 +28,7 @@ The Oracle Registry covenant maintains an operator directory as covenant state. 
 
 ```
 offset  size    field               encoding
-0       32      operator_pubkey     bytes32 (SECP256k1 compressed, 33 bytes with 0x02/0x03 prefix)
+0       32      operator_id         bytes32 (x-coordinate of SECP256k1 compressed pubkey)
 32      32      backup_pubkey       bytes32 (optional backup, zero if unset)
 64      8       bond_amount         uint64, big-endian (in sompi)
 72      8       applied_at          uint64, big-endian (block height)
@@ -74,8 +74,7 @@ offset  size    field                   encoding
 32      2       diversity_threshold     uint16, big-endian (bips, 9999 = 0.9999 correlation)
 34      2       outlier_threshold       uint16, big-endian (bips, 200 = 2% deviation from median)
 36      1       admin_count             byte
-37      32      admin_pubkeys[8]        bytes32[8] (up to 8 administrators)
-293     32      admin_pubkeys_cont      bytes32 (continues admin list if admin_count > 8)
+37      256     admin_ids              bytes32[8] (up to 8 administrator operator_ids)
 ```
 
 Total: 325 bytes of registry parameters.
@@ -94,14 +93,14 @@ Recommended defaults:
 
 ```
 apply(
-    bytes32 operator_pubkey,    // SECP256k1 compressed public key
+    bytes32 operator_id,    // SECP256k1 compressed public key
     uint64  bond_amount         // in sompi, must be ≥ min_bond
 )
 ```
 
 Submits an operator application with bond. Callable by anyone. Rules:
 
-1. `operator_pubkey` must not already exist in the registry with status APPLIED, APPROVED, ACTIVE, or SUSPENDED.
+1. `operator_id` must not already exist in the registry with status APPLIED, APPROVED, ACTIVE, or SUSPENDED.
 2. `bond_amount` must be ≥ `min_bond` and must be a finite integer.
 3. The bond is locked in the registry covenant — the applicant transfers `bond_amount` sompi to the registry as part of the transaction.
 4. On success, a new operator entry is created: `status = APPLIED`, `applied_at = current_block`, `bond_amount` recorded. All other fields zeroed.
@@ -110,11 +109,11 @@ Submits an operator application with bond. Callable by anyone. Rules:
 
 ```
 approve(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
-Admin approves an application. Caller must be an admin (pubkey in `admin_pubkeys`). Rules:
+Admin approves an application. Caller must be an admin (operator_id in `admin_ids`). Rules:
 
 1. Operator must exist with `status == APPLIED`.
 2. `BIT_DIVERSITY_CHECKED` must be set (admin must run diversity check before approving).
@@ -124,7 +123,7 @@ Admin approves an application. Caller must be an admin (pubkey in `admin_pubkeys
 
 ```
 activate(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
@@ -137,7 +136,7 @@ Admin activates an approved operator. Caller must be an admin. Rules:
 
 ```
 suspend(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
@@ -150,7 +149,7 @@ Admin suspends an operator. Caller must be an admin. Rules:
 
 ```
 reinstate(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
@@ -163,7 +162,7 @@ Admin reinstates a suspended operator. Caller must be an admin. Rules:
 
 ```
 revoke(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
@@ -176,7 +175,7 @@ Admin permanently revokes an operator. Caller must be an admin. Rules:
 
 ```
 reject(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
@@ -189,11 +188,11 @@ Admin rejects an application. Caller must be an admin. Rules:
 
 ```
 exit(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
-Operator voluntarily exits. Caller must be the operator (signature matching `operator_pubkey`) AND an admin must co-sign. Rules:
+Operator voluntarily exits. Caller must be the operator (signature matching `operator_id`) AND an admin must co-sign. Rules:
 
 1. Operator must exist with `status == ACTIVE`.
 2. Both operator signature and admin signature are required.
@@ -203,11 +202,11 @@ Operator voluntarily exits. Caller must be the operator (signature matching `ope
 
 ```
 heartbeat(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
-Operator proves liveness. Caller must be the operator (signature matching `operator_pubkey`). Rules:
+Operator proves liveness. Caller must be the operator (signature matching `operator_id`). Rules:
 
 1. Operator must exist with `status == ACTIVE`.
 2. On success: `last_heartbeat = current_block`.
@@ -231,7 +230,7 @@ Operator sets a backup key. Caller must be the operator. Rules:
 
 ```
 verify_diversity(
-    bytes32 operator_pubkey
+    bytes32 operator_id
 )
 ```
 
@@ -266,7 +265,7 @@ OracleRegistryDescriptor {
     min_bond: uint64                // minimum bond in sompi
     attestation_expiry: uint64      // max attestation age in blocks
     operator_entry_size: uint64     // 128 bytes per operator entry
-    admin_pubkeys_hash: bytes32     // blake2b of packed admin_pubkeys[]
+    admin_ids_hash: bytes32         // blake2b of packed admin_ids[]
 }
 ```
 
@@ -274,12 +273,12 @@ OracleRegistryDescriptor {
 
 Contracts verify operators by reading the registry state. The verification is a state read, not a cross-covenant call:
 
-1. **Locate the registry**: the verifying contract's deployment descriptor includes `oracle_registry_id` (the registry covenant's address).
-2. **Read operator state**: consume or reference the operator's UTXO in the registry. Parse the 128-byte entry using the layout above.
+1. **Locate the operator UTXO**: the verifying contract identifies the operator's UTXO in the registry by `operator_id`. This is the same 32-byte x-coordinate that appears in KCC-0017 attestations. The operator UTXO's covenant address is derived from the registry covenant template + the operator_id as the state discriminator — each operator occupies a known UTXO slot indexed by operator_id.
+2. **Read operator state**: consume or reference the operator's UTXO. Parse the 128-byte entry using the layout above.
 3. **Check status**: `status == ACTIVE`.
 4. **Check heartbeat**: `current_block - last_heartbeat ≤ heartbeat_timeout`.
-5. **Check bond**: `bond_amount ≥ min_bond` (ensures the bond hasn't been slashed below minimum).
-6. **Verify attestation signature**: the attestation's `operator_id` must match `operator_pubkey`, and the SECP256k1 signature over bytes 0-104 must be valid (per KCC-0017).
+5. **Check bond**: `bond_amount ≥ min_bond`.
+6. **Verify attestation signature**: the attestation's `operator_id` (KCC-0017, bytes 73–104) must match the registry entry's `operator_id`. Recover the full SECP256k1 public key from the attestation signature and verify its x-coordinate matches.
 
 If all checks pass, the attestation is valid. The verifying contract may cache the operator's status for the duration of the transaction.
 
@@ -306,7 +305,7 @@ OracleRegistry composes with:
 
 - **KCC-0011** (Conditional Token): `resolve()` verifies attestation signer is ACTIVE in the registry before accepting condition fulfillment.
 - **KCC-0013** (RWA Token): `verify_asset()` checks that NAV attestation comes from an ACTIVE oracle with sufficient bond.
-- **KCC-0017** (Oracle Attestation Format): attestations carry `operator_id` which matches `operator_pubkey` in the registry.
+- **KCC-0017** (Oracle Attestation Format): attestations carry `operator_id` which matches `operator_id` in the registry.
 - **KCC-0022** (ISDA Derivatives): rate fixing data (SOFR, EURIBOR) verified against registry operators.
 - **KCC-0023** (Lending): interest rate reference data verified against registry operators.
 - **ConsensusSignal** (KCC-0019): condition_met/condition_failed oracle attestations verified against registry.
@@ -314,7 +313,7 @@ OracleRegistry composes with:
 ## Rules
 
 1. Only ACTIVE operators may sign attestations. APPLIED, APPROVED, SUSPENDED, REVOKED, REJECTED, and CLOSED operators cannot produce valid attestations.
-2. Attestations must be signed with the operator's `operator_pubkey` (SECP256k1, 33-byte compressed format including parity prefix byte).
+2. Attestations must be signed with the operator's SECP256k1 key. The `operator_id` stored in the registry is the 32-byte x-coordinate of the compressed public key (prefix byte 0x02/0x03 dropped). KCC-0017 attestations carry the same 32-byte `operator_id`. Signature verification recovers the full 33-byte key and checks that the x-coordinate matches.
 3. Verifying contracts must check that the attestation signer's registry status is ACTIVE and heartbeat is current.
 4. Administrators must run diversity checks (off-chain) before approving new operators and record the result via `verify_diversity`.
 5. Operators must heartbeat within `heartbeat_timeout` blocks. Operators that miss the heartbeat window are treated as SUSPENDED by any contract reading their state.
@@ -332,5 +331,5 @@ Companion standards:
 
 - **KCC-0001**: Covenant ownership and authorization model (IzioDev).
 - **KCC-0011**: Conditional Token Standard — consumes oracle attestations verified against this registry.
-- **KCC-0017**: Oracle Attestation Format — binary attestation structure with operator_id matching operator_pubkey.
+- **KCC-0017**: Oracle Attestation Format — binary attestation structure with operator_id matching operator_id.
 - **KCC-0019**: Legal Signaling — ConsensusSignal for condition_met/condition_failed oracle events.

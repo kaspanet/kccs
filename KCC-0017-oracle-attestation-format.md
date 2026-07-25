@@ -52,7 +52,7 @@ Total: **169 bytes.** Signature covers bytes 0–104 (105 bytes). The signing ha
 | timestamp | 8 | Observation time in Unix milliseconds. Monotonic per operator. |
 | block_height | 8 | Kaspa block height at time of observation. |
 | nonce | 8 | Monotonically increasing counter per operator. Prevents replay. |
-| operator_id | 32 | x-coordinate of the operator's SECP256k1 compressed public key. Matches `operator_pubkey` in KCC-0018 registry. |
+| operator_id | 32 | x-coordinate of the operator's SECP256k1 compressed public key. Matches `operator_id` in the KCC-0018 registry. |
 | signature | 64 | SECP256k1 signature (r || s, each 32 bytes big-endian) over blake2b(bytes[0:105]). |
 
 ### Price Encoding
