@@ -34,7 +34,7 @@ offset  size    field           encoding
 114     32      extended_state_digest bytes32
 ```
 
-Total: 146 bytes of standard header.
+Total: 147 bytes of standard header.
 
 **token_kind** for KCC-0013 is always `FUNGIBLE = 0x00`. All RWA tokens represent fractional ownership with fungible shares. Non-fungible redemption (e.g. single-token art) uses `token_kind = NON_FUNGIBLE = 0x01` with the same extended state layout.
 

@@ -23,7 +23,7 @@ A fee-on-transfer token embeds the fee schedule in the covenant state itself. Ev
 
 ### State Layout
 
-Every KCC-0010 covenant state begins with the KCC-0008 standard header (146 bytes), followed by fee-on-transfer extended state committed via `extended_state_digest`.
+Every KCC-0010 covenant state begins with the KCC-0008 standard header (147 bytes), followed by fee-on-transfer extended state committed via `extended_state_digest`.
 
 #### Standard Header (inherited from KCC-0008)
 
@@ -38,7 +38,7 @@ offset  size    field           encoding
 114     32      extended_state_digest bytes32     // blake2b(encode(fee_on_transfer_extended))
 ```
 
-Total: 146 bytes of standard header.
+Total: 147 bytes of standard header.
 
 KCC-0010 restricts `token_kind` to `FUNGIBLE (0x00)`.
 

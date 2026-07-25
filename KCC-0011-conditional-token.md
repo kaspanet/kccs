@@ -30,7 +30,7 @@ Without a standard for conditional tokens, every such contract uses ad-hoc locki
 
 ### State Layout
 
-Every KCC-0011 covenant state begins with the KCC-0008 standard header (146 bytes), followed by the conditional token extended state (106 bytes). Total: 301 bytes.
+Every KCC-0011 covenant state begins with the KCC-0008 standard header (147 bytes), followed by the conditional token extended state (154 bytes). Total: 301 bytes.
 
 #### KCC-0008 Standard Header
 
