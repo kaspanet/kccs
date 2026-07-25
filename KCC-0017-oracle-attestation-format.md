@@ -78,7 +78,7 @@ Multiple attestations for different pairs may be bundled in one transaction. The
 
 ## Oracle Registry Reference
 
-This format references KCC-0001 (Oracle Registry Covenant Convention) for operator registration and verification. A compliant oracle network must maintain an Oracle Registry covenant. Operators must be ACTIVE. Attestations must be signed with the operator's registry-linked SECP256k1 key.
+This format references KCC-0018 (Oracle Registry) for operator registration and verification. A compliant oracle network must maintain an Oracle Registry covenant. Operators must be ACTIVE. Attestations must be signed with the operator's registry-linked SECP256k1 key.
 
 ## Convention Rules
 
