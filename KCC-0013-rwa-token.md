@@ -31,7 +31,7 @@ offset  size    field           encoding
 10      32      owner_id        bytes32
 42      8       amount          uint64, big-endian
 50      64      metadata_uri    padded bytes64, UTF-8
-114     32      extended_digest bytes32
+114     32      extended_state_digest bytes32
 ```
 
 Total: 146 bytes of standard header.
@@ -47,15 +47,15 @@ BIT_BURNED  = 0x04  // token_id has been burned (terminal)
 BIT_REDEEMED = 0x08 // this specific UTXO was redeemed
 ```
 
-**extended_digest** commits to the RWA extended state below. Computed as:
+**extended_state_digest** commits to the RWA extended state below. Computed as:
 
 ```
-extended_digest = blake2b(encode(rwa_extended_state))
+extended_state_digest = blake2b(encode(rwa_extended_state))
 ```
 
 #### RWA Extended State
 
-The following is the canonical extended state for every KCC-0013 token. It is hashed into `extended_digest` and is shared across all holder UTXOs for the same `token_id`:
+The following is the canonical extended state for every KCC-0013 token. It is hashed into `extended_state_digest` and is shared across all holder UTXOs for the same `token_id`:
 
 ```
 offset  size    field               encoding
@@ -256,7 +256,7 @@ transfer(
     State[] next_states,        // successor states, ordered by covenant output index
     Sig[]   signatures,         // authorization signatures, positional
     byte[]  witnesses,          // per-input metadata
-    bytes32 kyc_proof_input     // reference to KCC-0014 KYC token UTXO for recipient
+    bytes32 // KYC validation: witnesses[recipient_index] carries KCC-0014 soulbound reference. See KYC Enforcement section.     // reference to KCC-0014 KYC token UTXO for recipient
 )
 ```
 
@@ -298,7 +298,7 @@ Distributes income from the custodian to all holders pro-rata. Caller must be th
 3. `amount` is added to `income_pool` in the extended state.
 4. For each holder UTXO: the holder's balance increases by `(holder_amount / total_supply) × amount`, rounded down. Remainder stays in `income_pool`.
 5. `last_distribution` is set to the block timestamp.
-6. `extended_digest` is recomputed to reflect the updated `income_pool` and `last_distribution`.
+6. `extended_state_digest` is recomputed to reflect the updated `income_pool` and `last_distribution`.
 
 #### redeem
 
@@ -339,7 +339,7 @@ Updates the net asset value of the underlying asset. Caller must be the `oracle_
 3. `block.timestamp - nav_updated_at` must be ≥ `nav_update_interval` (rate-limited).
 4. `oracle_attestation` must be a valid signature from `oracle_id` over `(token_id, new_nav_per_token, block.timestamp)`.
 5. `new_nav_per_token` must be > 0.
-6. On success: `nav_per_token` is updated, `nav_updated_at` is set to `block.timestamp`, `extended_digest` is recomputed.
+6. On success: `nav_per_token` is updated, `nav_updated_at` is set to `block.timestamp`, `extended_state_digest` is recomputed.
 
 #### freeze / unfreeze
 
@@ -367,7 +367,7 @@ Transfers the custodian role. Caller must be the current `custodian_id`. Rules:
 
 1. `BIT_CUSTODIAN_LOCKED` must not be set in `flags_ext`.
 2. `new_custodian_id` must be non-zero.
-3. `custodian_id` is updated in extended state; `extended_digest` is recomputed.
+3. `custodian_id` is updated in extended state; `extended_state_digest` is recomputed.
 
 #### update_oracle
 
@@ -382,7 +382,7 @@ Transfers the oracle designation. Caller must be the current `oracle_id`. Rules:
 
 1. `BIT_ORACLE_LOCKED` must not be set in `flags_ext`.
 2. `new_oracle_id` must be non-zero.
-3. `oracle_id` is updated in extended state; `extended_digest` is recomputed.
+3. `oracle_id` is updated in extended state; `extended_state_digest` is recomputed.
 
 #### set_flags
 
@@ -406,7 +406,7 @@ KCC-0013 enforces identity verification at the covenant level by cross-referenci
 
 #### Verification Flow
 
-1. The `transfer` entrypoint receives `kyc_proof_input`, which is a reference to a KCC-0014 soulbound token UTXO consumed in the same transaction.
+1. The `transfer` entrypoint receives `// KYC validation: witnesses[recipient_index] carries KCC-0014 soulbound reference. See KYC Enforcement section.`, which is a reference to a KCC-0014 soulbound token UTXO consumed in the same transaction.
 2. The covenant reads the KCC-0014 state from that UTXO and validates:
    a. `token_type == KYC` — the soulbound token represents a KYC credential.
    b. `status == ACTIVE` — the credential has not been revoked, expired, or burned.
@@ -475,7 +475,7 @@ The oracle attestation certifies that the off-chain asset value equals `total_su
 When tokens are redeemed via `redeem`, the NAV is adjusted proportionally:
 
 ```
-nav_per_token_new = nav_per_token_old  // NAV per token is unchanged by redemption
+nav_per_token_new = nav_per_token_old  // NAV per token is preserved through redemption
 total_supply_new = total_supply_old - redeemed_amount
 // Total NAV: total_supply_new × nav_per_token
 ```
@@ -543,8 +543,8 @@ This standard adopts the following from KCC-0020:
 - **Transfer interface**: leader/delegator pattern with `transfer(State[], Sig[], byte[])` entrypoint signature
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i`
 - **Witness semantics**: positional witness values determine authorization mode
-- **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_digest`
-- **Extended state**: opaque `extended_digest` commitment via blake2b
+- **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_state_digest`
+- **Extended state**: opaque `extended_state_digest` commitment via blake2b
 - **Descriptor**: `prefix/suffix` covenant script bytes for template identification
 
 Where this standard extends KCC-0020:

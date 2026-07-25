@@ -37,7 +37,7 @@ offset  size    field               encoding
 72      8       last_heartbeat      uint64, big-endian (block height)
 80      8       delay_blocks        uint64, big-endian
 88      32      method_params       bytes32 (union, interpreted per death_method)
-120     32      extended_digest     bytes32
+120     32      extended_state_digest     bytes32
 ```
 
 Total: 152 bytes.
@@ -86,10 +86,10 @@ offset  size    field
 8       24      reserved             zero
 ```
 
-**extended_digest** commits to covenant-specific data beyond the standard header. Computed as:
+**extended_state_digest** commits to covenant-specific data beyond the standard header. Computed as:
 
 ```
-extended_digest = blake2b(encode(extended_state))
+extended_state_digest = blake2b(encode(extended_state))
 ```
 
 ### A.2 Entrypoint Signatures
@@ -208,7 +208,7 @@ offset  size    field               encoding
 120     8       delay_blocks        uint64, big-endian
 128     32      beneficiary_hash    bytes32 (blake2b over ordered beneficiary list)
 160     32      distribution_map    bytes32 (blake2b over per-beneficiary claimed amounts)
-192     32      extended_digest     bytes32
+192     32      extended_state_digest     bytes32
 ```
 
 Total: 224 bytes.
@@ -409,7 +409,7 @@ offset  size    field               encoding
 120     32      beneficiary_hash    bytes32 (blake2b over ordered beneficiary list)
 152     32      schedule_hash       bytes32 (blake2b over ordered schedule list)
 184     32      terms_hash          bytes32 (blake2b over trust terms document)
-216     32      extended_digest     bytes32
+216     32      extended_state_digest     bytes32
 ```
 
 Total: 248 bytes.
@@ -888,7 +888,7 @@ This standard's relationship to KCC-0020 is limited. Testamentary tokens are fun
 ### Adopted from KCC-0020
 
 - **Descriptor pattern**: `prefix/suffix` covenant script bytes for template identification. Each sub-standard publishes a descriptor (§A.3, §B.3, §C.3).
-- **Extended digest**: `extended_digest = blake2b(encode(extended_state))` for committing to covenant-specific data beyond the standard header.
+- **Extended digest**: `extended_state_digest = blake2b(encode(extended_state))` for committing to covenant-specific data beyond the standard header.
 - **Positional witness semantics** (Standard C only): `manage` adopts positional input/output pairing where consumed state at index `i` corresponds to successor state at index `i`. This is the only entrypoint across all three standards that resembles KCC-0020's transfer pattern.
 
 ### Not Adopted from KCC-0020
@@ -914,7 +914,7 @@ These patterns have no analogue in KCC-0020 or any existing Kaspa token standard
 | Feature | KCC-0020 | KCC-0012-A | KCC-0012-B | KCC-0012-C |
 |---------|:---:|:---:|:---:|:---:|
 | Transfer leader/delegator | ✓ | ✗ | ✗ | ✗ |
-| Standard transfer | ✓ | ✗ | ✗ | ✓ (manage only) |
+| Standard transfer | ✓ | ✗ | ✗ | ✗¹ |
 | Borrowed Receive | ✓ | ✗ | ✗ | ✗ |
 | Conditional release | ✗ | ✓ | ✓ | ✗ |
 | Death confirmation | ✗ | ✓ | ✓ | ✗ |
@@ -964,7 +964,7 @@ A wallet displaying a Trust token shows:
 ### Standard A — Inheritance
 
 1. `owner` and `heir` must be distinct, non-zero pubkey hashes.
-2. `death_method` is immutable after the first `set_heir` call that transitions status to `ACTIVE`. It may be changed by subsequent `set_heir` calls while `status == ACTIVE`.
+2. `death_method` may be changed by subsequent `set_heir` calls while `status == ACTIVE`.
 3. `last_heartbeat` must be updated at least once per `inactivity_blocks` when `death_method == INACTIVITY`. Failure to call `heartbeat` within the window allows anyone to call `confirm_death`.
 4. `delay_blocks` must be ≥ 1. This is the minimum challenge window after death confirmation.
 5. `confirm_death` is permissionless — any party may trigger it with valid proof.
@@ -1008,7 +1008,7 @@ A wallet displaying a Trust token shows:
 34. All state-changing entrypoints must be authorized by the caller specified in the entrypoint's caller constraint. Authorization is via standard Kaspa signature verification.
 35. The descriptor must be published before any wallet or indexer can interact with the covenant.
 36. Death confirmation proof data must be valid at the block height of inclusion. Replay of stale proofs across chain reorganizations is prevented by including `block_height` in signed messages.
-37. Extended state (via `extended_digest`) is preserved across state transitions that do not explicitly modify it. Entrypoints that modify extended state must recompute `extended_digest`.
+37. Extended state (via `extended_state_digest`) is preserved across state transitions that do not explicitly modify it. Entrypoints that modify extended state must recompute `extended_state_digest`.
 38. `status == CLAIMED` (Standard A), `status == DISTRIBUTED` (Standard B), and `status == TERMINATED` (Standard C) are terminal states. No entrypoint may transition out of a terminal state.
 
 ---
@@ -1022,3 +1022,4 @@ Implementations referenced:
 - KCC-0018 (Oracle Registry) — for oracle operator registration and verification
 - KCC-0015 (Vesting Token Standard) — for schedule-based vesting patterns reused in Standard C
 - KCC-0008 (Multi-Token Standard) — for descriptor pattern and extended digest conventions
+¹ `manage` adopts positional I/O pattern but is a trust management operation, not a standard transfer.

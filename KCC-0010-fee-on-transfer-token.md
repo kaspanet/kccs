@@ -23,7 +23,7 @@ A fee-on-transfer token embeds the fee schedule in the covenant state itself. Ev
 
 ### State Layout
 
-Every KCC-0010 covenant state begins with the KCC-0008 standard header (146 bytes), followed by fee-on-transfer extended state committed via `extended_digest`.
+Every KCC-0010 covenant state begins with the KCC-0008 standard header (146 bytes), followed by fee-on-transfer extended state committed via `extended_state_digest`.
 
 #### Standard Header (inherited from KCC-0008)
 
@@ -35,7 +35,7 @@ offset  size    field           encoding
 10      32      owner_id        bytes32
 42      8       amount          uint64, big-endian
 50      64      metadata_uri    padded bytes64, UTF-8
-114     32      extended_digest bytes32     // blake2b(encode(fee_on_transfer_extended))
+114     32      extended_state_digest bytes32     // blake2b(encode(fee_on_transfer_extended))
 ```
 
 Total: 146 bytes of standard header.
@@ -44,7 +44,7 @@ KCC-0010 restricts `token_kind` to `FUNGIBLE (0x00)`.
 
 #### Fee-on-Transfer Extended State
 
-The extended state is committed by `extended_digest = blake2b(encode(fee_extended))` where `fee_extended` is serialized as:
+The extended state is committed by `extended_state_digest = blake2b(encode(fee_extended))` where `fee_extended` is serialized as:
 
 ```
 offset  size    field                   encoding
@@ -86,7 +86,7 @@ The complete covenant state for each UTXO is:
 
 ```
 offset  size        field                   encoding
-0       146         kcc0008_header          (standard header, extended_digest commits to below)
+0       146         kcc0008_header          (standard header, extended_state_digest commits to below)
 146     4+34*N      fee_extended_raw        raw bytes of fee-on-transfer extended state
 ```
 
@@ -185,7 +185,7 @@ mint(
     uint64  token_id,
     uint64  amount,
     bytes64 metadata_uri,
-    bytes32 extended_digest
+    bytes32 extended_state_digest
 )
 ```
 
@@ -193,7 +193,7 @@ Creates new token supply. Caller must be the covenant owner. Rules:
 
 1. `token_id` must not already exist in the covenant state.
 2. `amount` may be any value up to `max_supply` for this `token_id` (configured via `set_token_config` per KCC-0008 owner actions).
-3. The `extended_digest` must commit to the current fee schedule state (or an empty schedule if not yet configured).
+3. The `extended_state_digest` must commit to the current fee schedule state (or an empty schedule if not yet configured).
 4. On success, a new UTXO is produced with the standard header populated and `flags = BIT_MINTED`.
 
 Note: The fee schedule is global per token. Minted tokens carry the current fee schedule in their extended state — they do not create a new schedule.
@@ -264,7 +264,7 @@ For `mint`, `burn`, `set_fee_schedule`, `freeze`, and `unfreeze`, witnesses corr
 This standard defines the semantic interface, fee-on-transfer extended state layout, fee deduction math, and multi-UTXO output construction for fee routing. For the byte-level encoding of the transfer leader/delegator pattern, witness positional semantics, Borrowed Receive extension, and KCC-0008 standard header layout, see:
 
 - **KCC-0020** (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev) — transfer leader/delegator invocation, positional input/output pairing, witness encoding, sighash construction.
-- **KCC-0008** (Multi-Token Standard) — standard header layout, `token_id`/`token_kind`/`flags` fields, `extended_digest` commitment, `mint`/`burn`/`approve`/`transfer_from` semantics, profiles, owner actions.
+- **KCC-0008** (Multi-Token Standard) — standard header layout, `token_id`/`token_kind`/`flags` fields, `extended_state_digest` commitment, `mint`/`burn`/`approve`/`transfer_from` semantics, profiles, owner actions.
 
 Where this standard extends KCC-0008 and KCC-0020:
 
@@ -303,7 +303,7 @@ Given a transfer of `sent_amount` tokens with `fee_schedule` containing `N` entr
    ]
    ```
 
-Each output UTXO preserves `token_id`, `token_kind`, `metadata_uri`, `flags`, and the full extended state (including `fee_schedule`) from the consumed input. The `extended_digest` is recomputed and matches across all outputs.
+Each output UTXO preserves `token_id`, `token_kind`, `metadata_uri`, `flags`, and the full extended state (including `fee_schedule`) from the consumed input. The `extended_state_digest` is recomputed and matches across all outputs.
 
 The `amount` field in each output UTXO is set as described. The sum of all output amounts equals `sent_amount`: `recipient_amount + total_fee = sent_amount`.
 
@@ -334,13 +334,13 @@ This standard adopts the following from KCC-0020:
 - **Transfer interface**: leader/delegator pattern with `transfer(State[], Sig[], byte[])` entrypoint signature.
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i`.
 - **Witness semantics**: positional witness values determine authorization mode.
-- **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_digest`.
-- **Extended state**: opaque `extended_digest` commitment via blake2b.
+- **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_state_digest`.
+- **Extended state**: opaque `extended_state_digest` commitment via blake2b.
 - **Descriptor**: `prefix/suffix` covenant script bytes for template identification.
 
 This standard also adopts from KCC-0008:
 
-- **Standard header**: 146-byte header with `token_id`, `token_kind`, `flags`, `owner_id`, `amount`, `metadata_uri`, `extended_digest`.
+- **Standard header**: 146-byte header with `token_id`, `token_kind`, `flags`, `owner_id`, `amount`, `metadata_uri`, `extended_state_digest`.
 - **Mint/burn**: supply creation and destruction with `BIT_MINTED`/`BIT_BURNED` flags.
 - **Owner controls**: `freeze`/`unfreeze` via `BIT_FROZEN`.
 - **Profiles**: FUNGIBLE only (`token_kind = 0x00`).
@@ -358,7 +358,7 @@ KCC-0010 supports one profile:
 
 | Profile | Detection | Entrypoints |
 |---------|-----------|-------------|
-| **Fee-on-Transfer Fungible** | `token_kind = 0x00, extended_digest commits to fee_schedule with fee_schedule_count > 0` | transfer, set_fee_schedule, mint, burn, freeze, unfreeze |
+| **Fee-on-Transfer Fungible** | `token_kind = 0x00, extended_state_digest commits to fee_schedule with fee_schedule_count > 0` | transfer, set_fee_schedule, mint, burn, freeze, unfreeze |
 
 A token with `fee_schedule_count == 0` behaves identically to a standard KCC-0008 fungible token until `set_fee_schedule` is called.
 
@@ -383,7 +383,7 @@ A token with `fee_schedule_count == 0` behaves identically to a standard KCC-000
 17. `freeze` blocks all `transfer` invocations while `BIT_FROZEN` is set.
 18. The descriptor must be published before any wallet or indexer can interact with the covenant.
 19. `set_fee_schedule` may only be called by the covenant owner.
-20. `mint` requires the `extended_digest` to commit to the current fee schedule state.
+20. `mint` requires the `extended_state_digest` to commit to the current fee schedule state.
 
 ## Use Cases
 

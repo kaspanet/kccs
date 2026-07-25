@@ -189,6 +189,21 @@ This standard does **not** adopt KCC-0020's transfer pattern. There is no `trans
 
 Where this standard aligns with KCC-0020 conventions:
 
+| Feature | KCC-0020 | KCC-0014 |
+|---------|:---:|:---:|
+| Transfer leader/delegator | ✓ | ✗ |
+| Standard transfer | ✓ | ✗ |
+| Borrowed Receive | ✓ | ✗ |
+| Positional I/O pairing | ✓ | ✗ |
+| Descriptor prefix/suffix | ✓ | ✓ |
+| Offset-based state layout | ✓ | ✓ |
+| Big-endian encoding | ✓ | ✓ |
+| Immutable holder binding | ✗ | ✓ |
+| Read-only verify with fixed output | ✗ | ✓ |
+| Issuer-controlled lifecycle | ✗ | ✓ |
+
+Where this standard aligns with KCC-0020 conventions:
+
 - **Big-endian encoding**: numeric fields (`uint64`, `uint16`) use network byte order.
 - **Offset-based state layout**: fields are accessed by fixed byte offsets, not by name-based deserialization.
 - **Descriptor prefix/suffix pattern**: covenant script bytes are split around mutable state for template identification.
@@ -231,7 +246,7 @@ Update (EXPIRED): status EXPIRED → ACTIVE, new expires_at + metadata (renewal)
 
 ### Verify: cross-covenant read path
 
-The `verify` entrypoint produces no UTXO — it is a pure read of the target token's state. Verifier covenants call it with the `(holder, token_type)` they need to check and receive the fixed 42-byte response. Because `verify` is a covenant entrypoint, the result is cryptographically bound to the transaction context — a verifier covenant can trust the return value within the same transaction's execution.
+The `verify` entrypoint produces no new UTXO — it is a state read, not a cross-covenant call. To use `verify`, a consuming covenant reads the KCC-0014 token's UTXO state bytes directly (no cross-call needed — just parse the known state layout). If the KCC-0014 UTXO is consumed in the same transaction, the covenant reads the consumed state. If only read access is needed, the UTXO is referenced by outpoint and its state bytes are read without consumption. The return format is the fixed 42-byte sequence defined above.
 
 ## Rules
 

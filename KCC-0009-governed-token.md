@@ -333,9 +333,24 @@ For `mint` and `burn`: standard KCC-0001 owner authorization applies.
 
 This standard adopts the following from KCC-0020:
 
+| Feature | KCC-0020 | KCC-0009 |
+|---------|:---:|:---:|
+| Transfer leader/delegator | ✓ | ✗ |
+| Standard transfer | ✓ | ✗ |
+| Borrowed Receive | ✓ | ✗ |
+| Positional I/O pairing | ✓ | ✗ |
+| Descriptor prefix/suffix | ✓ | ✓ |
+| Offset-based state layout | ✓ | ✓ |
+| Big-endian encoding | ✓ | ✓ |
+| Governance proposal lifecycle | ✗ | ✓ |
+| Quorum-based transfer authorization | ✗ | ✓ |
+| Execution delay window | ✗ | ✓ |
+
+This standard adopts the following from KCC-0020:
+
 - **Descriptor pattern**: `prefix/suffix` covenant script bytes for template identification, enabling wallets and indexers to recognize the covenant.
 - **Metadata URI**: `metadata_uri` field (bytes64, UTF-8 padded) for off-chain token identity. See KCC-0021 for canonical layout.
-- **Extended digest pattern**: config state integrity is verifiable through the descriptor's `governor_set_digest` (blake2b of governors[]), analogous to KCC-0020's `extended_digest`.
+- **Extended digest pattern**: config state integrity is verifiable through the descriptor's `governor_set_digest` (blake2b of governors[]), analogous to KCC-0020's `extended_state_digest`.
 
 Where this standard diverges from KCC-0020:
 
@@ -355,8 +370,8 @@ KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and
 - **Transfer leader/delegator pattern**: the first covenant input invokes `transfer(State[], Sig[], byte[])` as the leader; remaining inputs invoke `transfer_delegator()` with no input data, deferring to the leader's declared state transition.
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i` in the `next_states` array. This ordering is the basis for amount conservation checks.
 - **Witness semantics**: positional witness values determine authorization mode — `BORROWED_RECEIVE (0xFF)` exempts an input from owner authorization (for deposits), `STANDARD_TRANSFER (0x00)` requires a valid owner signature.
-- **Borrowed Receive extension**: a covenant input with `witness == 0xFF` preserves `owner_id`, `token_kind`, `metadata_uri`, and `extended_digest` while increasing `amount`, enabling trustless deposits into the covenant.
-- **Extended state commitments**: `extended_digest = blake2b(encode(extended_state))` commits to covenant-specific data beyond the standard header, treated as opaque by standard transfers.
+- **Borrowed Receive extension**: a covenant input with `witness == 0xFF` preserves `owner_id`, `token_kind`, `metadata_uri`, and `extended_state_digest` while increasing `amount`, enabling trustless deposits into the covenant.
+- **Extended state commitments**: `extended_state_digest = blake2b(encode(extended_state))` commits to covenant-specific data beyond the standard header, treated as opaque by standard transfers.
 
 ### What KCC-0009 Extends Beyond KCC-0020
 

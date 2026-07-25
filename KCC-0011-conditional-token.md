@@ -30,7 +30,7 @@ Without a standard for conditional tokens, every such contract uses ad-hoc locki
 
 ### State Layout
 
-Every KCC-0011 covenant state begins with the KCC-0008 standard header (146 bytes), followed by the conditional token extended state (106 bytes). Total: 252 bytes.
+Every KCC-0011 covenant state begins with the KCC-0008 standard header (146 bytes), followed by the conditional token extended state (106 bytes). Total: 301 bytes.
 
 #### KCC-0008 Standard Header
 
@@ -42,13 +42,13 @@ offset  size    field           encoding
 10      32      owner_id        bytes32
 42      8       amount          uint64, big-endian
 50      64      metadata_uri    padded bytes64, UTF-8
-114     32      extended_digest bytes32
+114     32      extended_state_digest bytes32
 ```
 
-The `extended_digest` field commits to the conditional token extended state below. It is computed as:
+The `extended_state_digest` field commits to the conditional token extended state below. It is computed as:
 
 ```
-extended_digest = blake2b(encode(extended_state))
+extended_state_digest = blake2b(encode(extended_state))
 ```
 
 where `extended_state` is the 106-byte conditional token payload described next.
@@ -59,13 +59,16 @@ where `extended_state` is the 106-byte conditional token payload described next.
 offset  size    field               encoding
 0       1       condition_type      uint8
 1       32      condition_params    bytes32 (type-specific encoding)
-33      32      oracle_operator_id  bytes32 (SECP256k1 compressed pubkey, 32 bytes)
+33      32      oracle_operator_id  bytes32 (SECP256k1 compressed pubkey, 33 bytes)
 65      8       deadline            uint64, big-endian (block height)
 73      32      revert_recipient    bytes32 (owner_id)
 105     1       status              uint8
+106     32      oracle_registry_id  bytes32 (covenant ID of KCC-0018 Oracle Registry)
+138     8       max_attestation_age uint64, big-endian (max blocks attestation is valid)
+146     8       last_resolve_nonce  uint64, big-endian (prevents replay)
 ```
 
-Total: 106 bytes.
+Total: 154 bytes.
 
 **condition_type** values:
 
@@ -339,8 +342,8 @@ This standard adopts the following from KCC-0020:
 - **Transfer interface**: leader/delegator pattern with `transfer(State[], Sig[], byte[])` entrypoint signature
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i`
 - **Witness semantics**: positional witness values determine authorization mode
-- **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_digest`
-- **Extended state**: opaque `extended_digest` commitment via blake2b over the conditional token extended state
+- **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_state_digest`
+- **Extended state**: opaque `extended_state_digest` commitment via blake2b over the conditional token extended state
 - **Descriptor**: `prefix/suffix` covenant script bytes for template identification
 
 Where this standard extends KCC-0020:
@@ -362,7 +365,7 @@ For the binary attestation format consumed by the `resolve` entrypoint, includin
 
 For operator registration, lifecycle states (ACTIVE/SUSPENDED/REVOKED), and the registry covenant verification step within `resolve`, see KCC-0018 (Oracle Registry Covenant Convention).
 
-For the base token state layout (`token_id`, `token_kind`, `flags`, `owner_id`, `amount`, `metadata_uri`, `extended_digest`), standard transfer rules, mint/burn entrypoints, and the allowance system, see KCC-0008 (Multi-Token Standard).
+For the base token state layout (`token_id`, `token_kind`, `flags`, `owner_id`, `amount`, `metadata_uri`, `extended_state_digest`), standard transfer rules, mint/burn entrypoints, and the allowance system, see KCC-0008 (Multi-Token Standard).
 
 For metadata identity and discovery, see KCC-0021.
 
