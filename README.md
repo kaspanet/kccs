@@ -7,4 +7,5 @@ Each KCC is a **Kaspa Call for a Convention**: a document specifying a conventio
 KCCs do not propose changes to Kaspa consensus or core-node behavior. Such changes belong in [Kaspa Improvement Proposals (KIPs)](https://github.com/kaspanet/kips).
 
 | Number | Category | Title | Author | Status |
+| KCC-0008 | Asset Standard | Multi-Token Standard | Vida Wallet | Draft |
 |--------|----------|-------|--------|--------|
