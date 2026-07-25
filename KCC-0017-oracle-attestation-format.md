@@ -128,7 +128,7 @@ Each oracle operator's attestation endpoint should publish a descriptor:
 ```
 KCC0017AttestationDescriptor {
     version: uint8              // 0x01
-    operator_id: bytes32        // matches operator_pubkey in KCC-0018 registry
+    operator_id: bytes32        // matches operator_id in KCC-0018 registry
     supported_pairs: bytes32[]  // trading pairs this operator attests
     min_interval: uint64        // minimum milliseconds between attestations
     endpoint: bytes64           // operator's attestation endpoint URI

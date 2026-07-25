@@ -681,7 +681,7 @@ FIXED       = 0xFF
 **Flags bitfield** (used by all three sub-conventions):
 
 ```
-BIT_FROZEN          = 0x01  // all operations suspended (admin action)
+the token configuration frozen flag          = 0x01  // all operations suspended (admin action)
 BIT_COLLATERAL_LOCKED = 0x02  // collateral cannot be withdrawn
 BIT_RECALL_ACTIVE   = 0x04  // GMSLA: recall has been requested
 BIT_TERMINAL        = 0x80  // state is terminal, no further transitions
@@ -755,7 +755,7 @@ Wallets and DEXes detect lending covenant behavior from the descriptor prefix:
 
 1. All lending covenants MUST specify `governing_law` as ENGLISH (0x00) or NY (0x01). No other governing law is recognized.
 2. Collateral margin MUST be maintained at all times while `status == ACTIVE`. A breach — where `collateral_value < required_collateral` — triggers the non-breaching party's right to call `margin_call` (MRA/GMSLA) or `default` (any).
-3. All state-changing entrypoints fail while `BIT_FROZEN` is set.
+3. All state-changing entrypoints fail while `the token configuration frozen flag` is set.
 4. `BIT_TERMINAL` states (CLOSED) are immutable — no further transitions permitted.
 
 ### LMAFacility

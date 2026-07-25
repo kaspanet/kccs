@@ -227,7 +227,7 @@ Evaluates the condition using an oracle attestation. Callable by anyone who can 
 
 1. **Parse attestation blob**: Extract version, pair, price_numerator, price_denominator, timestamp, block_height, nonce, operator_id, and signature per KCC-0017 layout.
 
-2. **Format validation**: Verify `version == 0x01` and total length == 161 bytes (KCC-0017 §Verification rule 1).
+2. **Format validation**: Verify `version == 0x01` and total length == 169 bytes (KCC-0017 §Verification rule 1).
 
 3. **Operator match**: Verify `operator_id == oracle_operator_id` from the covenant's extended state. Only the designated operator may resolve this condition.
 

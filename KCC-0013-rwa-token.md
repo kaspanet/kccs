@@ -41,7 +41,7 @@ Total: 147 bytes of standard header.
 **flags** bitfield:
 
 ```
-BIT_FROZEN  = 0x01  // all transfers blocked (regulatory)
+the token configuration frozen flag (see KCC-0008)  = 0x01  // all transfers blocked (regulatory)
 BIT_MINTED  = 0x02  // token_id has been fully minted
 BIT_BURNED  = 0x04  // token_id has been burned (terminal)
 BIT_REDEEMED = 0x08 // this specific UTXO was redeemed
@@ -266,7 +266,7 @@ Rules enforced:
 
 1. For each `token_id` in consumed states: `sum(prev_amounts) == sum(next_amounts)` — no implicit minting or burning.
 2. `token_id` and `token_kind` are immutable for each consumed covenant state.
-3. `BIT_FROZEN` must not be set on any consumed state.
+3. `the token configuration frozen flag (see KCC-0008)` must not be set on any consumed state.
 4. `BIT_BURNED` must not be set on any consumed state.
 5. `status` in extended state must be `ACTIVE (0x00)`.
 6. For each consumed input where `witnesses[i] != BORROWED_RECEIVE`: `signatures[i]` must be a valid signature over the transaction sighash by the owner identified by `owner_id`.
@@ -412,7 +412,7 @@ KCC-0013 enforces identity verification at the covenant level by cross-referenci
    b. `status == ACTIVE` — the credential has not been revoked, expired, or burned.
    c. `issuer == kyc_issuer_id` — the credential was issued by the approved KYC provider for this RWA token.
    d. `expires_at == 0 OR expires_at > block.timestamp` — the credential is not expired (0 = permanent).
-   e. `holder == recipient_owner_id` — the credential belongs to the recipient (i.e., is bound to the same identity that will hold the RWA tokens).
+   e. `holder == recipient_owner_id` — the credential belongs to the recipient (i.e., is bound to the same identity that will hold the RWA tokens). This check is performed by reading the KCC-0014 token's state bytes directly (known 84-byte header layout) and verifying the fixed 42-byte verify sequence: `[valid:1][token_type:1][issuer:32][expires_at:8]`. `valid == 0x01` and `token_type == KYC` are required.
 3. If all conditions pass, the transfer proceeds. If any condition fails, the transfer reverts.
 
 #### Multiple Recipients

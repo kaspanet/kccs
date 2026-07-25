@@ -31,7 +31,7 @@ Every KCC-0010 covenant state begins with the KCC-0008 standard header (147 byte
 offset  size    field           encoding
 0       8       token_id        uint64, big-endian
 8       1       token_kind      byte        // 0x00 = FUNGIBLE
-9       1       flags           byte        // KCC-0008 flags (BIT_FROZEN, BIT_MINTED, BIT_BURNED)
+9       1       flags           byte        // KCC-0008 flags (the token configuration frozen flag (see KCC-0008 Token Configuration Extended State), BIT_MINTED, BIT_BURNED)
 10      32      owner_id        bytes32
 42      8       amount          uint64, big-endian
 50      64      metadata_uri    padded bytes64, UTF-8
@@ -146,7 +146,7 @@ When multiple UTXOs of the same `token_id` are consumed in one transfer, they ar
 3. `fee_schedule_count` and `fee_schedule` are preserved across all outputs — fee schedule is global per token_id.
 4. Fee outputs are produced in the same order as `fee_schedule` entries (omitting zero-amount entries).
 5. For each consumed input where `witnesses[i] != BORROWED_RECEIVE`: `signatures[i]` must be a valid signature by the owner identified by `owner_id`.
-6. `BIT_FROZEN` must not be set on any consumed state.
+6. `the token configuration frozen flag (see KCC-0008 Token Configuration Extended State)` must not be set on any consumed state.
 7. `BIT_BURNED` must not be set on any consumed state.
 8. `recipient_amount >= MIN_OUTPUT` (dust guard).
 9. If `fee_schedule_count == 0`: no fee outputs are produced (token has no fee configured).
@@ -220,10 +220,10 @@ freeze()
 unfreeze()
 ```
 
-Pauses or resumes all transfers. Caller must be the covenant owner. Sets/clears `BIT_FROZEN` on the covenant-level state. Rules:
+Pauses or resumes all transfers. Caller must be the covenant owner. Sets/clears `the token configuration frozen flag (see KCC-0008 Token Configuration Extended State)` on the covenant-level state. Rules:
 
-1. `freeze` sets `BIT_FROZEN` — all `transfer` invocations fail while set.
-2. `unfreeze` clears `BIT_FROZEN` — transfers resume.
+1. `freeze` sets `the token configuration frozen flag (see KCC-0008 Token Configuration Extended State)` — all `transfer` invocations fail while set.
+2. `unfreeze` clears `the token configuration frozen flag (see KCC-0008 Token Configuration Extended State)` — transfers resume.
 3. `mint` and `burn` may still be permitted while frozen (implementation-defined).
 
 ### Descriptor
@@ -342,7 +342,7 @@ This standard also adopts from KCC-0008:
 
 - **Standard header**: 146-byte header with `token_id`, `token_kind`, `flags`, `owner_id`, `amount`, `metadata_uri`, `extended_state_digest`.
 - **Mint/burn**: supply creation and destruction with `BIT_MINTED`/`BIT_BURNED` flags.
-- **Owner controls**: `freeze`/`unfreeze` via `BIT_FROZEN`.
+- **Owner controls**: `freeze`/`unfreeze` via `the token configuration frozen flag (see KCC-0008 Token Configuration Extended State)`.
 - **Profiles**: FUNGIBLE only (`token_kind = 0x00`).
 
 Where this standard extends both:
@@ -380,7 +380,7 @@ A token with `fee_schedule_count == 0` behaves identically to a standard KCC-000
 14. All output UTXOs preserve `token_id`, `token_kind`, `metadata_uri`, and the full fee extended state from input.
 15. Multi-input aggregation: fee calculation is on sum of consumed amounts, not per-input.
 16. `burn` does not deduct fees — fees apply only to `transfer`.
-17. `freeze` blocks all `transfer` invocations while `BIT_FROZEN` is set.
+17. `freeze` blocks all `transfer` invocations while `the token configuration frozen flag (see KCC-0008 Token Configuration Extended State)` is set.
 18. The descriptor must be published before any wallet or indexer can interact with the covenant.
 19. `set_fee_schedule` may only be called by the covenant owner.
 20. `mint` requires the `extended_state_digest` to commit to the current fee schedule state.
