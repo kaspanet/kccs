@@ -365,7 +365,7 @@ Where this standard diverges from KCC-0020:
 
 ### What KCC-0020 Covers
 
-KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev) defines the byte-level encoding for _holder-initiated_ token transfers. Its core mechanisms are:
+KCC-0020 defines the byte-level encoding for _holder-initiated_ token transfers. Its core mechanisms are:
 
 - **Transfer leader/delegator pattern**: the first covenant input invokes `transfer(State[], Sig[], byte[])` as the leader; remaining inputs invoke `transfer_delegator()` with no input data, deferring to the leader's declared state transition.
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i` in the `next_states` array. This ordering is the basis for amount conservation checks.

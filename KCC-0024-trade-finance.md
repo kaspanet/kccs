@@ -423,7 +423,7 @@ Oracle resolves a dispute. Caller must be one of the `oracles[]`. Rules:
 
 ### Encoding
 
-This standard specifies the semantic interface and state layout for trade finance covenants. Documents are verified by hash (blake2b), not content — the covenant does not store or inspect document contents. For the byte-level encoding of identities and signature verification, see KCC-0014 (Soulbound Token). For the transfer and owner authorization pattern, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev).
+This standard specifies the semantic interface and state layout for trade finance covenants. Documents are verified by hash (blake2b), not content — the covenant does not store or inspect document contents. For the byte-level encoding of identities and signature verification, see KCC-0014 (Soulbound Token). For the transfer and owner authorization pattern, see KCC-0020.
 
 The 5-banking-day examination window in UCP600 corresponds to approximately 7,200 blocks at 1 block per second (assuming 24-hour banking days). Implementations should parameterize this value at deployment to accommodate different block times.
 

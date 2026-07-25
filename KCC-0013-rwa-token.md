@@ -558,7 +558,7 @@ Where this standard extends KCC-0020:
 
 ## Encoding
 
-This standard specifies the semantic interface, extended state layout, KYC enforcement flow, NAV update protocol, income distribution mechanics, redemption process, and per-profile state encoding for RWA token covenants. For the byte-level encoding of the transfer leader/delegator pattern, witness positional semantics, Borrowed Receive extension, and standard state header, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev). For the soulbound identity token standard consumed by KYC enforcement, see KCC-0014.
+This standard specifies the semantic interface, extended state layout, KYC enforcement flow, NAV update protocol, income distribution mechanics, redemption process, and per-profile state encoding for RWA token covenants. For the byte-level encoding of the transfer leader/delegator pattern, witness positional semantics, Borrowed Receive extension, and standard state header, see KCC-0020. For the soulbound identity token standard consumed by KYC enforcement, see KCC-0014.
 
 ## Profiles
 
@@ -600,4 +600,4 @@ The author maintains a conforming implementation. This document defines the conv
 
 - **KCC-0008**: Multi-Token Standard — the base standard header and token_kind convention
 - **KCC-0014**: Soulbound Token Standard — the KYC credential format consumed by this standard
-- **KCC-0020**: Fungible Token Covenant Specification — the byte-level transfer encoding adopted by this standard (Manyfest, Michael Sutton, IzioDev)
+- **KCC-0020**: Fungible Token Covenant Specification — the byte-level transfer encoding adopted by this standard

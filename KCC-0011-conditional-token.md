@@ -359,7 +359,7 @@ Where this standard extends KCC-0020:
 
 This standard specifies the semantic interface, extended state layout, and oracle integration for conditional token covenants.
 
-For the byte-level encoding of the transfer leader/delegator pattern, witness positional semantics, and Borrowed Receive extension, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev).
+For the byte-level encoding of the transfer leader/delegator pattern, witness positional semantics, and Borrowed Receive extension, see KCC-0020.
 
 For the binary attestation format consumed by the `resolve` entrypoint, including field layout, price encoding (rational numerator/denominator), and signature verification, see KCC-0017 (Oracle Attestation Format).
 

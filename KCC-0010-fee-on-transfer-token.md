@@ -263,7 +263,7 @@ For `mint`, `burn`, `set_fee_schedule`, `freeze`, and `unfreeze`, witnesses corr
 
 This standard defines the semantic interface, fee-on-transfer extended state layout, fee deduction math, and multi-UTXO output construction for fee routing. For the byte-level encoding of the transfer leader/delegator pattern, witness positional semantics, Borrowed Receive extension, and KCC-0008 standard header layout, see:
 
-- **KCC-0020** (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev) — transfer leader/delegator invocation, positional input/output pairing, witness encoding, sighash construction.
+- **KCC-0020** — transfer leader/delegator invocation, positional input/output pairing, witness encoding, sighash construction.
 - **KCC-0008** (Multi-Token Standard) — standard header layout, `token_id`/`token_kind`/`flags` fields, `extended_state_digest` commitment, `mint`/`burn`/`approve`/`transfer_from` semantics, profiles, owner actions.
 
 Where this standard extends KCC-0008 and KCC-0020:

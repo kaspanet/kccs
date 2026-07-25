@@ -1416,7 +1416,7 @@ Companion standards:
 - **KCC-0009**: Governed Token Standard — governance-gated transfers that composable with signaling.
 - **KCC-0016**: Covenant ABI — interface discovery format adopted by all KCC-0019 sub-conventions.
 - **KCC-0018**: Oracle Registry — operator lifecycle; ConsensusRecord composes with it for multi-party attestation.
-- **KCC-0020** (Manyfest, Michael Sutton, IzioDev): Fungible Token Covenant — the transfer pattern that signaling conventions deliberately diverge from, while adopting its descriptor pattern.
+- **KCC-0020**: Fungible Token Covenant — the transfer pattern that signaling conventions deliberately diverge from, while adopting its descriptor pattern.
 - **KCC-0022**: ISDA Derivatives — uses ConsensusSignal for rate fixings and close-out events.
 - **KCC-0023**: Lending — uses ConsensusSignal for collateral breach tracking.
 - **KCC-0024**: Trade Finance — uses ConsensusSignal for milestone condition tracking.

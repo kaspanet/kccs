@@ -266,7 +266,7 @@ Where this standard extends KCC-0020:
 
 ## Encoding
 
-This standard specifies the semantic interface, state layout, and unlocking calculus for vesting tokens. For the byte-level encoding of the transfer leader/delegator pattern, witness positional semantics, and Borrowed Receive extension, see KCC-0020 (Fungible Token Covenant Specification by Manyfest, Michael Sutton, and IzioDev). For the conditional token and oracle attestation format consumed by MILESTONE schedules, see KCC-0011 (Conditional Token Standard) and KCC-0017 (Oracle Attestation Format). For oracle operator registration, see KCC-0018 (Oracle Registry).
+This standard specifies the semantic interface, state layout, and unlocking calculus for vesting tokens. For the byte-level encoding of the transfer leader/delegator pattern, witness positional semantics, and Borrowed Receive extension, see KCC-0020. For the conditional token and oracle attestation format consumed by MILESTONE schedules, see KCC-0011 (Conditional Token Standard) and KCC-0017 (Oracle Attestation Format). For oracle operator registration, see KCC-0018 (Oracle Registry).
 
 The vesting covenant itself encodes the following at the byte level:
 - State layout as defined in the State Layout section above (147 bytes, packed)
