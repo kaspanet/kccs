@@ -78,7 +78,7 @@ BIT_FROZEN        = 0x02  // all proposals blocked (emergency pause)
 BIT_INITIALIZED   = 0x04  // config has been deployed and governors set
 ```
 
-**metadata_uri** specifies an off-chain metadata resource for the token (name, ticker, decimals, governance charter). See forthcoming KCC-0021 (Knitser) for canonical metadata layout.
+**metadata_uri** specifies an off-chain metadata resource for the token (name, ticker, decimals, governance charter). See KCC-0021 (adopted by kascov and KaspaRocket) (Knitser) for canonical metadata layout.
 
 #### Proposal State
 
