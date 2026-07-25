@@ -701,7 +701,7 @@ For the transfer entrypoints used during collateral posting, drawdown, and repay
 
 All three sub-conventions adopt the following from KCC-0020:
 
-- **Transfer interface**: When collateral, securities, or cash moves between parties, the KCC-0020 `transfer(State[], Sig[], byte[])` / `transfer_delegator()` leader/delegator pattern is used for the KCC-0008 token states involved.
+- **Transfer interface**: When collateral, securities, or cash moves between parties, the KCC-0020 `transfer(State[], sig[], byte[])` / `transfer_delegator()` leader/delegator pattern is used for the KCC-0008 token states involved.
 - **Borrowed Receive**: Collateral and securities are locked into the lending covenant via `witnesses[i] == 0xFF`, which exempts the depositing party from owner authorization while preserving token integrity. This allows the covenant to hold assets without being the token owner.
 - **Positional input/output pairing**: consumed token states at index `i` correspond to successor token states at index `i`.
 - **Extended state**: each sub-convention maintains an `extended_state_digest` committed via blake2b, allowing sub-convention-specific extensions without breaking the standard header.

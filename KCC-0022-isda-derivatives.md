@@ -142,7 +142,7 @@ execute(
     bytes   master_agreement_uri,       // link to full ISDA Master text
     bool    cross_default,              // enable cross-default provisions
     bool    automatic_early,            // enable AET
-    Sig[]   signatures                  // one signature from each party
+    sig[] sigs                  // one signature from each party
 )
 ```
 
@@ -199,7 +199,7 @@ Cures a declared default within the cure period. Rules:
 
 ```
 terminate(
-    Sig[]   signatures                  // both parties must sign
+    sig[] sigs                  // both parties must sign
 )
 ```
 
@@ -360,7 +360,7 @@ confirm(
     uint64  floor_rate,                 // bps × 100, 0 = no floor
     uint8   flags,                      // COMPOUNDING | STUB_PERIOD | AMORTIZING | etc.
     bytes   trade_reference_uri,        // link to term sheet
-    Sig[]   signatures                  // both parties must sign
+    sig[] sigs                  // both parties must sign
 )
 ```
 
@@ -413,7 +413,7 @@ THIRTY_E360: (360*(Y2-Y1) + 30*(M2-M1-1) + max(0, 30-D1) + min(30, D2)) / 360 (w
 
 ```
 early_terminate(
-    Sig[]   signatures                  // both parties must sign (mutual) or Close-Out triggered
+    sig[] sigs                  // both parties must sign (mutual) or Close-Out triggered
 )
 ```
 
@@ -957,7 +957,7 @@ Substitutes one form of collateral for another. Rules:
 
 ```
 close(
-    Sig[]   signatures                  // both parties OR Close-Out trigger
+    sig[] sigs                  // both parties OR Close-Out trigger
 )
 ```
 
@@ -1047,7 +1047,11 @@ Where KCC-0020 patterns ARE adopted:
 - **Descriptor**: prefix/suffix covenant script bytes for template identification (same pattern, different content).
 - **Extended digest**: blake2b commitment over extended state, preserving opacity for standard tooling.
 
-## Composability
+## ### Fee Bridge
+
+ISDA conventions may route protocol fees through KCC-0010 (Fee-on-Transfer Token). When a confirmation or netting settlement produces a payment, the fee is deducted via the token's covenant-enforced fee schedule — no separate fee covenant is required. The fee recipient is configured in the KCC-0010 token's `fee_schedule` at deployment.
+
+### Composability
 
 ISDA conventions compose with the full Vida covenant ecosystem:
 

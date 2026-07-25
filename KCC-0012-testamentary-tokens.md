@@ -494,8 +494,8 @@ Rules enforced:
 
 ```
 manage(
-    State[] next_states,
-    Sig[]   signatures,
+    State[] newStates,
+    sig[] sigs,
     byte[]  witnesses
 )
 ```
@@ -893,7 +893,7 @@ This standard's relationship to KCC-0020 is limited. Testamentary tokens are fun
 
 ### Not Adopted from KCC-0020
 
-- **Transfer leader/delegator pattern**: None of the three standards implements `transfer(State[], Sig[], byte[])` with a `transfer_delegator()` companion. Standard A has no transfer entrypoint at all — the dead man's switch releases tokens on death confirmation, not on a holder's transfer instruction.
+- **Transfer leader/delegator pattern**: None of the three standards implements `transfer(State[], sig[], byte[])` with a `transfer_delegator()` companion. Standard A has no transfer entrypoint at all — the dead man's switch releases tokens on death confirmation, not on a holder's transfer instruction.
 - **Borrowed Receive (witness 0xFF)**: Not applicable. There is no standard transfer to exempt authorization from.
 - **Fungible token semantics**: Testamentary tokens operate on the covenant's entire balance, not on per-token_id fungible units. There is no `token_id`, `token_kind`, `amount`, or `metadata_uri` field.
 - **Approve/transfer_from allowance system**: Not applicable. Testamentary tokens have no allowance or delegated transfer mechanism.

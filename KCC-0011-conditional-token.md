@@ -191,8 +191,8 @@ All tokens are created or none are. Same rules as `mint` apply per token.
 
 ```
 transfer(
-    State[] next_states,
-    Sig[]   signatures,
+    State[] newStates,
+    sig[] sigs,
     byte[]  witnesses
 )
 ```
@@ -282,8 +282,8 @@ Returns tokens to the designated `revert_recipient`. Rules:
 ```
 check_and_transfer(
     bytes   attestation_blob,
-    State[] next_states,
-    Sig[]   signatures,
+    State[] newStates,
+    sig[] sigs,
     byte[]  witnesses
 )
 ```
@@ -291,7 +291,7 @@ check_and_transfer(
 Atomic resolve + transfer in a single entrypoint. Combines the logic of `resolve` and `transfer`:
 
 1. Execute `resolve(attestation_blob)` — evaluate and update status.
-2. If status is now `MET`, execute `transfer(next_states, signatures, witnesses)`.
+2. If status is now `MET`, execute `transfer(newStates, signatures, witnesses)`.
 3. If status is `FAILED`, the entire call reverts — no state changes occur.
 4. This ensures the oracle check and transfer are atomic within one covenant input.
 
@@ -318,7 +318,7 @@ KCC0011Descriptor {
     oracle_operator_id: bytes32        // designated oracle operator
     max_attestation_age: uint64        // max blocks between attestation and resolution
     oracle_registry_id: bytes32        // covenant ID of the Oracle Registry (KCC-0018)
-    kcc20_extensions: ExtensionId[]    // supported extensions (e.g., Borrowed Receive)
+    optional_extensions: ExtensionId[]    // supported extensions (e.g., Borrowed Receive)
 }
 ```
 
@@ -333,13 +333,13 @@ BORROWED_RECEIVE  = 0xFF   // KCC-0020 Borrowed Receive
 STANDARD_TRANSFER = 0x00   // normal signed transfer
 ```
 
-For `resolve`, witnesses are not used. For `mint`, `revert`, and caller-authorized entrypoints, witnesses correspond to standard authorization — the caller provides `signatures[i]` authorizing the state transition.
+For `resolve`, witnesses are not used. For `mint`, `revert`, and caller-authorized entrypoints, witnesses correspond to standard authorization — the caller provides `sigs[i]` authorizing the state transition.
 
 ### KCC-0020 Alignment
 
 This standard adopts the following from KCC-0020:
 
-- **Transfer interface**: leader/delegator pattern with `transfer(State[], Sig[], byte[])` entrypoint signature
+- **Transfer interface**: leader/delegator pattern with `transfer(State[], sig[], byte[])` entrypoint signature
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i`
 - **Witness semantics**: positional witness values determine authorization mode
 - **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_state_digest`

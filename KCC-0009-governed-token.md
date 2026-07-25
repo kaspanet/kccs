@@ -354,7 +354,7 @@ This standard adopts the following from KCC-0020:
 
 Where this standard diverges from KCC-0020:
 
-- **No transfer leader/delegator pattern**: KCC-0009 does NOT use `transfer(State[], Sig[], byte[])` / `transfer_delegator()`. The standard KCC-0020 transfer flow — where a holder signs to authorize movement and inputs are paired positionally with outputs — is replaced entirely by the governance proposal lifecycle.
+- **No transfer leader/delegator pattern**: KCC-0009 does NOT use `transfer(State[], sig[], byte[])` / `transfer_delegator()`. The standard KCC-0020 transfer flow — where a holder signs to authorize movement and inputs are paired positionally with outputs — is replaced entirely by the governance proposal lifecycle.
 - **No Borrowed Receive**: the `witness == 0xFF` Borrowed Receive extension is not applicable. Every token movement requires a governance proposal that reaches quorum.
 - **No positional input/output pairing**: proposals specify explicit `recipient` and `amount` rather than relying on covenant input ordering.
 - **No allowance system**: approve/transfer_from from KCC-0008 are not relevant — governance replaces delegated spending.
@@ -367,8 +367,8 @@ Where this standard diverges from KCC-0020:
 
 KCC-0020 defines the byte-level encoding for _holder-initiated_ token transfers. Its core mechanisms are:
 
-- **Transfer leader/delegator pattern**: the first covenant input invokes `transfer(State[], Sig[], byte[])` as the leader; remaining inputs invoke `transfer_delegator()` with no input data, deferring to the leader's declared state transition.
-- **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i` in the `next_states` array. This ordering is the basis for amount conservation checks.
+- **Transfer leader/delegator pattern**: the first covenant input invokes `transfer(State[], sig[], byte[])` as the leader; remaining inputs invoke `transfer_delegator()` with no input data, deferring to the leader's declared state transition.
+- **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i` in the `newStates` array. This ordering is the basis for amount conservation checks.
 - **Witness semantics**: positional witness values determine authorization mode — `BORROWED_RECEIVE (0xFF)` exempts an input from owner authorization (for deposits), `STANDARD_TRANSFER (0x00)` requires a valid owner signature.
 - **Borrowed Receive extension**: a covenant input with `witness == 0xFF` preserves `owner_id`, `token_kind`, `metadata_uri`, and `extended_state_digest` while increasing `amount`, enabling trustless deposits into the covenant.
 - **Extended state commitments**: `extended_state_digest = blake2b(encode(extended_state))` commits to covenant-specific data beyond the standard header, treated as opaque by standard transfers.

@@ -1256,7 +1256,7 @@ Each sub-convention follows the KCC-0016 ABI pattern: entrypoints declare parame
 
 For **witness semantics**, signaling conventions use standard KCC-0001 authorization:
 
-- The covenant verifies that `signatures[0]` (for single-party entrypoints) or `signatures[i]` (for multi-party) is a valid signature over the transaction sighash by the party identified by the relevant pubkey hash field (`proposer_id`, `author_id`, `party_a_id`, `creator_id`, `signer_id`, `initiator_id`).
+- The covenant verifies that `signatures[0]` (for single-party entrypoints) or `sigs[i]` (for multi-party) is a valid signature over the transaction sighash by the party identified by the relevant pubkey hash field (`proposer_id`, `author_id`, `party_a_id`, `creator_id`, `signer_id`, `initiator_id`).
 - Entrypoints callable by anyone (`expire`, `expire_conditional`, `expire_record`, `expire_execution`) do not require authorization — any party may submit the expiry transaction.
 
 ### Cross-Covenant References
@@ -1286,7 +1286,7 @@ These signaling conventions adopt the following from KCC-0020:
 
 These signaling conventions deliberately diverge from KCC-0020:
 
-- **No transfer leader/delegator pattern**: None of the six sub-conventions use `transfer(State[], Sig[], byte[])` / `transfer_delegator()`. They are signaling covenants, not transfer covenants. There is no value movement, no amount conservation, no positional input/output pairing.
+- **No transfer leader/delegator pattern**: None of the six sub-conventions use `transfer(State[], sig[], byte[])` / `transfer_delegator()`. They are signaling covenants, not transfer covenants. There is no value movement, no amount conservation, no positional input/output pairing.
 - **No Borrowed Receive**: The `witness == 0xFF` Borrowed Receive extension is not applicable. There are no deposits into signaling covenants — state is created via explicit creation entrypoints (`propose`, `create_redline`, `propose_conditional`, `create_record`, `signal_*`, `initiate_execution`).
 - **No allowance system**: approve/transfer_from from KCC-0008 are not relevant. Signaling conventions do not delegate spending authority.
 - **No token_id / token_kind / amount**: These fields do not exist in any KCC-0019 state layout. Signaling covenants track legal states, not token balances.

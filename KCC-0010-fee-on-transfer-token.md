@@ -98,8 +98,8 @@ Total: `150 + 34 * fee_schedule_count` bytes per UTXO.
 
 ```
 transfer(
-    State[] next_states,     // successor states, ordered by covenant output index
-    Sig[]   signatures,       // authorization signatures, positional
+    State[] newStates,     // successor states, ordered by covenant output index
+    sig[] sigs,       // authorization signatures, positional
     byte[]  witnesses         // per-input metadata (see KCC-0020)
 )
 ```
@@ -145,7 +145,7 @@ When multiple UTXOs of the same `token_id` are consumed in one transfer, they ar
 2. `token_id`, `token_kind`, and `metadata_uri` are immutable for each consumed state.
 3. `fee_schedule_count` and `fee_schedule` are preserved across all outputs — fee schedule is global per token_id.
 4. Fee outputs are produced in the same order as `fee_schedule` entries (omitting zero-amount entries).
-5. For each consumed input where `witnesses[i] != BORROWED_RECEIVE`: `signatures[i]` must be a valid signature by the owner identified by `owner_id`.
+5. For each consumed input where `witnesses[i] != BORROWED_RECEIVE`: `sigs[i]` must be a valid signature by the owner identified by `owner_id`.
 6. `the token configuration frozen flag (see KCC-0008 Token Configuration Extended State)` must not be set on any consumed state.
 7. `BIT_BURNED` must not be set on any consumed state.
 8. `recipient_amount >= MIN_OUTPUT` (dust guard).
@@ -236,7 +236,7 @@ KCC0010Descriptor {
     suffix: bytes              // covenant script bytes after mutable state
     token_ids: uint64[]        // token_ids managed by this deployment
     fee_schedule: FeeScheduleEntry[]  // the configured fee schedule (empty if not yet set)
-    kcc20_extensions: ExtensionId[]   // supported extensions (e.g., Borrowed Receive)
+    optional_extensions: ExtensionId[]   // supported extensions (e.g., Borrowed Receive)
 }
 ```
 
@@ -257,7 +257,7 @@ STANDARD_TRANSFER = 0x00   // normal signed transfer
 
 For `transfer_delegator`, witnesses are not used.
 
-For `mint`, `burn`, `set_fee_schedule`, `freeze`, and `unfreeze`, witnesses correspond to standard authorization — the caller provides `signatures[i]` authorizing the state transition.
+For `mint`, `burn`, `set_fee_schedule`, `freeze`, and `unfreeze`, witnesses correspond to standard authorization — the caller provides `sigs[i]` authorizing the state transition.
 
 ## Encoding
 
@@ -331,7 +331,7 @@ Output UTXOs:
 
 This standard adopts the following from KCC-0020:
 
-- **Transfer interface**: leader/delegator pattern with `transfer(State[], Sig[], byte[])` entrypoint signature.
+- **Transfer interface**: leader/delegator pattern with `transfer(State[], sig[], byte[])` entrypoint signature.
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i`.
 - **Witness semantics**: positional witness values determine authorization mode.
 - **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_state_digest`.

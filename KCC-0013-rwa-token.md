@@ -253,8 +253,8 @@ Creates RWA token supply backed by a verified off-chain asset. Caller must be th
 
 ```
 transfer(
-    State[] next_states,        // successor states, ordered by covenant output index
-    Sig[]   signatures,         // authorization signatures, positional
+    State[] newStates,        // successor states, ordered by covenant output index
+    sig[] sigs,         // authorization signatures, positional
     byte[]  witnesses,          // per-input metadata
     bytes32 // KYC validation: witnesses[recipient_index] carries KCC-0014 soulbound reference. See KYC Enforcement section.     // reference to KCC-0014 KYC token UTXO for recipient
 )
@@ -269,7 +269,7 @@ Rules enforced:
 3. `the token configuration frozen flag (see KCC-0008)` must not be set on any consumed state.
 4. `BIT_BURNED` must not be set on any consumed state.
 5. `status` in extended state must be `ACTIVE (0x00)`.
-6. For each consumed input where `witnesses[i] != BORROWED_RECEIVE`: `signatures[i]` must be a valid signature over the transaction sighash by the owner identified by `owner_id`.
+6. For each consumed input where `witnesses[i] != BORROWED_RECEIVE`: `sigs[i]` must be a valid signature over the transaction sighash by the owner identified by `owner_id`.
 7. **KYC enforcement** (see Section: KYC Enforcement) applies to every recipient whose `amount` increases in the successor state.
 
 #### transfer_delegator
@@ -286,8 +286,8 @@ Invoked by every non-leader covenant input. Delegates to the leader's `transfer`
 distribute_income(
     uint64  token_id,
     uint64  amount,
-    State[] next_states,
-    Sig[]   signatures
+    State[] newStates,
+    sig[] sigs
 )
 ```
 
@@ -534,13 +534,13 @@ STANDARD_TRANSFER  = 0x00  // normal signed transfer with KYC enforcement
 
 For `transfer_delegator`, witnesses are not used.
 
-For `mint`, `redeem`, `distribute_income`, `verify_asset`, `freeze`, `unfreeze`, `update_custodian`, `update_oracle`, and `set_flags`, the caller provides `signatures[i]` authorizing the state transition.
+For `mint`, `redeem`, `distribute_income`, `verify_asset`, `freeze`, `unfreeze`, `update_custodian`, `update_oracle`, and `set_flags`, the caller provides `sigs[i]` authorizing the state transition.
 
 ### KCC-0020 Alignment
 
 This standard adopts the following from KCC-0020:
 
-- **Transfer interface**: leader/delegator pattern with `transfer(State[], Sig[], byte[])` entrypoint signature
+- **Transfer interface**: leader/delegator pattern with `transfer(State[], sig[], byte[])` entrypoint signature
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i`
 - **Witness semantics**: positional witness values determine authorization mode
 - **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization while preserving `owner_id`, `token_kind`, `extended_state_digest`

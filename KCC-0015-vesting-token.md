@@ -170,8 +170,8 @@ Called by the holder. Converts unlocked tokens into a transferable UTXO governed
 
 ```
 transfer(
-    State[] next_states,     // successor states, ordered by covenant output index
-    Sig[]   signatures,       // authorization signatures, positional
+    State[] newStates,     // successor states, ordered by covenant output index
+    sig[] sigs,       // authorization signatures, positional
     byte[]  witnesses         // per-input metadata
 )
 ```
@@ -248,7 +248,7 @@ The descriptor allows wallets and indexers to identify the vesting covenant, dec
 
 This standard adopts the following from KCC-0020:
 
-- **Transfer interface**: leader/delegator pattern with `transfer(State[], Sig[], byte[])` entrypoint signature for claimed tokens
+- **Transfer interface**: leader/delegator pattern with `transfer(State[], sig[], byte[])` entrypoint signature for claimed tokens
 - **Positional input/output pairing**: consumed state at index `i` corresponds to successor state at index `i`
 - **Witness semantics**: positional witness values determine authorization mode
 - **Borrowed Receive**: `witnesses[i] == 0xFF` exempts input from owner authorization for claimed tokens
