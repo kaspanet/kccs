@@ -6,8 +6,9 @@
 | **Category** | Asset Standard |
 | **Title** | Conditional Token — Oracle-Gated Transfers |
 | **Author** | Vida Wallet |
-| **Status** | Draft |
+| **Status** | Informational |
 | **Created** | 2026-07-25 |
+| **Depends on** | KCC-0008 (PR #10, draft), KCC-0020 (PR #2, draft) |
 
 ## Abstract
 

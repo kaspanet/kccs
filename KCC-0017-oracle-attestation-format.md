@@ -8,6 +8,7 @@
 | **Author** | Vida Wallet |
 | **Status** | Draft |
 | **Created** | 2026-07-25 |
+| **Depends on** | KCC-0001 (PR #3, draft), KIP-0017 (proposed) |
 | **Updated** | 2026-07-25 |
 
 ## Abstract

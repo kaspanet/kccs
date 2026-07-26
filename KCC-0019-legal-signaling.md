@@ -6,8 +6,9 @@
 | **Category** | Covenant Convention |
 | **Title** | Legal Signaling — consensus, conditions, offers, and redlining |
 | **Author** | Vida Wallet |
-| **Status** | Draft |
+| **Status** | Informational |
 | **Created** | 2026-07-24 |
+| **Depends on** | KCC-0014 (PR #10, draft), KCC-0008 (PR #10, draft) |
 | **Updated** | 2026-07-25 |
 
 ## Abstract

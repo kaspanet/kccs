@@ -77,18 +77,18 @@ Two sub-conventions: UCP600 (letters of credit, 5-day examination window, hash-b
 | KCC-0008 | Asset Standard | Multi-Token Standard | Vida Wallet | Draft |
 | KCC-0009 | Asset Standard | Governed Token — Multi-Party Transfer Approval | Vida Wallet | Draft |
 | KCC-0010 | Asset Standard | Fee-on-Transfer Token — Automatic Revenue Sharing | Vida Wallet | Draft |
-| KCC-0011 | Asset Standard | Conditional Token — Oracle-Gated Transfers | Vida Wallet | Draft |
-| KCC-0012 | Asset Standard | Testamentary Tokens — Inheritance, Will, and Trust | Vida Wallet | Draft |
-| KCC-0013 | Asset Standard | Real World Asset Token | Vida Wallet | Draft |
+| KCC-0011 | Asset Standard | Conditional Token — Oracle-Gated Transfers | Vida Wallet | Informational |
+| KCC-0012 | Asset Standard | Testamentary Tokens — Inheritance, Will, and Trust | Vida Wallet | Informational |
+| KCC-0013 | Asset Standard | Real World Asset Token | Vida Wallet | Informational |
 | KCC-0014 | Asset Standard | Soulbound Token — Non-Transferable Identity | Vida Wallet | Draft |
 | KCC-0015 | Asset Standard | Vesting Token — Time-Locked Release | Vida Wallet | Draft |
 | KCC-0016 | Interoperability | Covenant ABI — Interface Discovery | Vida Wallet | Draft |
 | KCC-0017 | Interoperability | Oracle Attestation Format | Vida Wallet | Draft |
 | KCC-0018 | Covenant Convention | Oracle Registry — Operator Lifecycle | Vida Wallet | Draft |
-| KCC-0019 | Covenant Convention | Legal Signaling — Offer, Redline, Consensus | Vida Wallet | Draft |
-| KCC-0022 | Covenant Convention | ISDA Master Agreement — Derivatives | Vida Wallet | Draft |
-| KCC-0023 | Covenant Convention | Lending and Collateral — LMA, MRA, GMSLA | Vida Wallet | Draft |
-| KCC-0024 | Covenant Convention | Trade Finance — UCP600 and Incoterms | Vida Wallet | Draft |
+| KCC-0019 | Covenant Convention | Legal Signaling — Offer, Redline, Consensus | Vida Wallet | Informational |
+| KCC-0022 | Covenant Convention | ISDA Master Agreement — Derivatives | Vida Wallet | Informational |
+| KCC-0023 | Covenant Convention | Lending and Collateral — LMA, MRA, GMSLA | Vida Wallet | Informational |
+| KCC-0024 | Covenant Convention | Trade Finance — UCP600 and Incoterms | Vida Wallet | Informational |
 
 ---
 
@@ -97,4 +97,5 @@ Two sub-conventions: UCP600 (letters of credit, 5-day examination window, hash-b
 - **Draft**: Under active development. Open for comment.
 - **Proposed**: Submitted for ecosystem review.
 - **Accepted**: Convergence point reached.
+- **Informational**: Design document for early-stage exploration. May be promoted to Draft as development progresses.
 - **Deprecated**: Superseded or withdrawn.
