@@ -37,7 +37,7 @@ offset  size    field               encoding
 105     64      signature           bytes64 (SECP256k1 signature over bytes 0–104)
 ```
 
-Total: **169 bytes.** Signature covers bytes 0–104 (105 bytes). The signing hash is `blake2b(bytes[0:105])`.
+Total: **169 bytes.** Signature covers bytes 0–104 (105 bytes). The signing hash is `blake2b(bytes[0:105], digest_size=32, key="OracleAttestationHash")`. The 32-byte key provides domain separation from transaction signing and personal message signing.
 
 **Note on operator_id**: SECP256k1 compressed public keys are 33 bytes (0x02 or 0x03 prefix + 32 bytes of x-coordinate). For the attestation format, the prefix byte is dropped and only the 32-byte x-coordinate is stored. Verification recovers the full public key from the signature and checks that the x-coordinate matches.
 
@@ -82,7 +82,7 @@ A covenant verifies an attestation in five steps:
 1. **Format check**: `version == 0x01` and blob length == 169 bytes.
 2. **Pair match**: bytes `[1:33]` must match the expected trading pair string (null-padded).
 3. **Freshness check**: `current_block - block_height ≤ max_attestation_age` (the verifying contract's configured maximum, typically 10 blocks).
-4. **Signature verification**: recover the SECP256k1 public key from `signature` (bytes 105–168) over `blake2b(bytes[0:105])`. Verify that the recovered key's x-coordinate (bytes 1–32 of the 33-byte compressed key) matches `operator_id`.
+4. **Signature verification**: recover the SECP256k1 public key from `signature` (bytes 105–168) over `blake2b(bytes[0:105], digest_size=32, key="OracleAttestationHash")`. Verify that the recovered key's x-coordinate (bytes 1–32 of the 33-byte compressed key) matches `operator_id`.
 5. **Registry check**: verify that `operator_id` is a registered operator in the KCC-0018 Oracle Registry with `status == ACTIVE` and `current_block - last_heartbeat ≤ heartbeat_timeout`.
 
 If all five checks pass, the attestation is valid and the price value `(price_numerator, price_denominator)` may be used.
