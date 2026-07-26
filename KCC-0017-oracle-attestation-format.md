@@ -53,7 +53,7 @@ Total: **169 bytes.** Signature covers bytes 0–104 (105 bytes). The signing ha
 | block_height | 8 | Kaspa block height at time of observation. |
 | nonce | 8 | Monotonically increasing counter per operator. Prevents replay. |
 | operator_id | 32 | x-coordinate of the operator's SECP256k1 compressed public key. Matches `operator_id` in the KCC-0018 registry. |
-| signature | 64 | SECP256k1 signature (r || s, each 32 bytes big-endian) over blake2b(bytes[0:105]). |
+| signature | 64 | SECP256k1 signature (r || s, each 32 bytes big-endian) over blake2b(bytes[0:105], digest_size=32, key="OracleAttestationHash"). |
 
 ### Price Encoding
 
