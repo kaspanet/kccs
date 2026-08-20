@@ -9,3 +9,4 @@ KCCs do not propose changes to Kaspa consensus or core-node behavior. Such chang
 | Number | Category | Title | Author | Status |
 |--------|----------|-------|--------|--------|
 | [1](kcc-0001.md) | Standard, Concepts, Covenant | Covenant definition, concepts, bytes layout and ABI | Romain Billot, Michael Sutton, Ori Newman | Draft |
+| [2](kcc-0002.md) | Program ABI Standard, Application | Authority Schemes | Romain Billot, Michael Sutton | Draft |
