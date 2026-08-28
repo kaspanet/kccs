@@ -18,16 +18,14 @@ consumes the existing UTXO and recreates it in place with a larger token amount.
 The recipient's normal owner authorization is not used, the KAS value cannot
 decrease, and the owner and extended state remain unchanged.
 
-Because the existing UTXO is consumed, every borrowed receive changes its
-outpoint. Without restrictions, an attacker could repeatedly send tiny token
-amounts to churn that outpoint. A wallet, signing device, or service relying on
-its locally known UTXOs would then have to reconnect and rediscover the current
-UTXO before using it.
+Because a borrowed receive consumes and recreates an existing UTXO, it changes
+that UTXO's outpoint. A wallet that did not expect the borrow may need to
+synchronize and discover the successor before using its recorded UTXO.
 
-The borrow scheme controls who may cause this limited state change, or under
-what conditions it is allowed. It cannot remove the need to learn the new
-outpoint after an actual borrow, but it can prevent arbitrary or low-value
-borrows from making locally stored UTXO information stale.
+Unrestricted borrowing also enables outpoint-churn spam. An attacker can
+repeatedly recreate the UTXO through token-dust transfers, continually changing
+its outpoint and invalidating transactions constructed to spend the previous
+one.
 
 ## Borrow authorization
 
@@ -35,67 +33,68 @@ Each KCC20 state contains a `borrow_scheme` and a 32-byte `borrow_guard`.
 `borrow_scheme` selects the authorization rule, while `borrow_guard` holds its
 parameter or evolving state.
 
-Some schemes require an authorization parameter when borrowing. This parameter
-is referred to as `borrow_witness` and its meaning depends on the selected
-scheme.
+Some schemes require a scheme-specific `borrow_witness`.
 
-| Scheme | Meaning of `borrow_guard` | `borrow_witness` | Successor `borrow_guard` |
+| Scheme | Control model | `borrow_guard` | `borrow_witness` |
 | --- | --- | --- | --- |
-| `disabled/v1` | Unused | Borrowing is rejected | Not applicable |
-| `amount-threshold/v1` | First eight bytes contain the threshold | Empty | Unchanged |
-| `schnorr-signature/v1` | Dedicated 32-byte public key | 65-byte Schnorr transaction signature | Unchanged |
-| `hash-chain/v1` | Current 32-byte hash | Its 32-byte preimage | Revealed preimage |
+| `disabled/v1` | No borrowing | Unused | Borrowing is rejected |
+| `amount-threshold/v1` | Any sender above threshold | Threshold in first eight bytes | Empty |
+| `schnorr-signature/v1` | Approved borrower, reusable | Dedicated 32-byte public key | 65-byte Schnorr transaction signature |
+| `hash-chain/v1` | Approved borrow, single-use | Current 32-byte hash-chain commitment | 32-byte preimage, 32-byte one-time public key, and 65-byte signature |
 
 Every borrowed receive preserves `borrow_scheme`. A normal owner-authorized
 transfer may replace both `borrow_scheme` and `borrow_guard`.
 
 ### `disabled/v1`
 
-The `disabled/v1` scheme prevents the UTXO from being borrowed and does not use
-`borrow_guard`. Receiving tokens therefore requires a separate output.
+The `disabled/v1` scheme rejects borrowed receives.
 
 ### `amount-threshold/v1`
 
-The `amount-threshold/v1` scheme permits borrowing without sender-specific
-authorization. The first eight bytes of `borrow_guard` contain the threshold
-that the token increase must strictly exceed; the remaining bytes are unused.
-This makes dust-level token spam ineffective, although sufficiently large
-transfers can still change the outpoint. No borrow witness is required.
+The `amount-threshold/v1` scheme allows any sender to borrow when the token
+increase exceeds the threshold stored in `borrow_guard`. A positive threshold
+mitigates dust-based outpoint churn; a zero threshold allows any positive
+increase. No `borrow_witness` is required.
 
 ### `schnorr-signature/v1`
 
-The `schnorr-signature/v1` scheme stores a dedicated borrow public key in
-`borrow_guard`. A sender with access to the corresponding borrow signing key may
-authorize repeated borrows. This supports controlled reuse by recurring trusted
-senders without granting permission to spend the recipient's tokens or reduce
-the UTXO's KAS value. Other senders cannot make the locally recorded outpoint
-stale through Borrowed Receive.
+The `schnorr-signature/v1` scheme allows the holder of a dedicated borrow key to
+authorize repeated borrows. Each borrow requires a valid transaction signature.
+The key cannot spend the recipient's tokens or reduce the UTXO's KAS value.
 
 ### `hash-chain/v1`
 
-The `hash-chain/v1` scheme uses `borrow_guard` as the current commitment to an
-OTP-like sequence of one-time borrow authorizations. A wallet can preallocate a
-finite number of authorizations in advance. Each borrowed receive consumes one
-authorization and advances `borrow_guard`, without requiring a new signature
-from the recipient.
+The `hash-chain/v1` scheme allows one borrow per released chain link. Each link
+is a one-time authorization bound to its own signing key and advances
+`borrow_guard` when used. A wallet can prepare a finite chain and release links at will to authorize individual borrows.
 
 The idea originates in Rivest and Shamir's [PayWord and MicroMint: Two Simple
-Micropayment Schemes](https://people.csail.mit.edu/rivest/pubs/RS96a.pdf).
+Micropayment Schemes](https://people.csail.mit.edu/rivest/pubs/RS96a.pdf). KCC20
+adapts the one-way hash-chain construction by binding each link to a distinct
+one-time Schnorr key.
 
 To prepare a chain for `n` borrows, the wallet chooses a random value `x_0` and
-computes:
+`n` one-time Schnorr keypairs `(private_key_i, pubkey_i)`, then computes:
 
 ```text
-x_1 = Hash(x_0)
-x_2 = Hash(x_1)
+x_1 = Hash(x_0 || pubkey_1)
+x_2 = Hash(x_1 || pubkey_2)
 ...
-x_n = Hash(x_(n-1))
+x_n = Hash(x_(n-1) || pubkey_n)
 ```
 
 The initial `borrow_guard` is `x_n`, which commits to the complete sequence. A
-borrow against guard `x_i` reveals `x_(i-1)` and proves the authorization by
-requiring `Hash(x_(i-1)) == x_i`. The revealed value becomes the successor's
-`borrow_guard`, ready for the next borrow.
+borrow against guard `x_i` reveals `x_(i-1)` and `pubkey_i`, and includes a
+transaction signature by the corresponding one-time private key. It proves the
+authorization by requiring:
+
+```text
+Hash(x_(i-1) || pubkey_i) == x_i
+VerifySchnorr(pubkey_i, transaction, signature_i)
+```
+
+The wallet gives the intended sender `x_(i-1)` and `private_key_i`. The revealed
+value `x_(i-1)` becomes the successor's `borrow_guard`, ready for the next borrow.
 
 The authorizations are revealed in reverse order and cannot be reused. The
 wallet may release them one at a time while monitoring each borrow, or several
@@ -111,15 +110,6 @@ authorization private until another change is expected. Without a released
 authorization, the UTXO cannot be borrowed, so the wallet may go offline knowing
 that its outpoint will remain stable.
 
-The authorization is normally shared with an intended sender, but is not
-strictly bound to that sender. Once a transaction reveals it in the mempool,
-another party may copy it into a different valid borrowed-receive transaction
-and attempt to have that transaction confirmed first. Because both transactions
-spend the same UTXO, only one can be accepted. The competing transaction must
-still increase the recipient's token amount and preserve its KAS value, limiting
-the incentive for this form of front-running.
-
 Before going offline, a wallet that has released an authorization which remains
 unused may revoke it through an owner-authorized transfer or consume it itself
-in a valid borrowed receive. Applications that instead require
-transaction-specific authorization may use the Schnorr-signature scheme.
+in a valid borrowed receive.
