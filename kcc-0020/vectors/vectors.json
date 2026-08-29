@@ -1,0 +1,94 @@
+{
+  "kcc": 20,
+  "title": "KCC-20 conformance vectors (first cut)",
+  "producer": "KRON — self-validated against KCC-1 §11",
+  "hash_function": "unkeyed BLAKE3 32-byte (KCC-1 §3.1); P2SH envelope uses BLAKE2b",
+  "self_validation": {
+    "source": "KCC-1 §11",
+    "all_passed": true,
+    "checks": [
+      {
+        "name": "kcc1_11.1_dispatch_step",
+        "ok": true
+      },
+      {
+        "name": "kcc1_11.3_state",
+        "ok": true
+      },
+      {
+        "name": "kcc1_11.4_tmpl_empty",
+        "ok": true
+      },
+      {
+        "name": "kcc1_11.4_tmpl_61_6263",
+        "ok": true
+      },
+      {
+        "name": "kcc1_11.4_tmpl_6162_63",
+        "ok": true
+      }
+    ]
+  },
+  "state_encoding": [
+    {
+      "name": "zero_amount_disabled_borrow",
+      "input": {
+        "amount": 0,
+        "owner": "0100000000000000000000000000000000000000000000000000000000000000",
+        "owner_scheme": 0,
+        "borrow_scheme": 0,
+        "borrow_guard": "0000000000000000000000000000000000000000000000000000000000000000",
+        "extension_commitment": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected_state_bytes_hex": "08000000000000000020010000000000000000000000000000000000000000000000000000000000000001000100200000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
+      "state_len_bytes": 112
+    },
+    {
+      "name": "amount_1000_p2pkh_amount_threshold_1000",
+      "input": {
+        "amount": 1000,
+        "owner": "aa00000000000000000000000000000000000000000000000000000000000000",
+        "owner_scheme": 1,
+        "borrow_scheme": 1,
+        "borrow_guard": "e803000000000000000000000000000000000000000000000000000000000000",
+        "extension_commitment": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected_state_bytes_hex": "08e80300000000000020aa000000000000000000000000000000000000000000000000000000000000000101010120e803000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
+      "state_len_bytes": 112
+    },
+    {
+      "name": "large_amount_covenantid_owner_hashchain",
+      "input": {
+        "amount": 9007199254740991,
+        "owner": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "owner_scheme": 4,
+        "borrow_scheme": 3,
+        "borrow_guard": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+        "extension_commitment": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "expected_state_bytes_hex": "08ffffffffffff1f0020ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0104010320cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd20eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "state_len_bytes": 112
+    }
+  ],
+  "dispatch_tags": [
+    {
+      "name": "transfer",
+      "function_signature": "transfer({int,byte[32],byte,byte,byte[32],byte[32]}[],byte[])",
+      "dispatch_tag_hex": "79c71c23"
+    },
+    {
+      "name": "transfer_delegator",
+      "function_signature": "transfer_delegator(byte[])",
+      "dispatch_tag_hex": "fd3ef14a"
+    }
+  ],
+  "template_hashes": [
+    {
+      "name": "toy_prefix51_suffix75",
+      "prefix_hex": "51",
+      "suffix_hex": "75",
+      "construction": "blake3(LE64(len(prefix))||prefix||LE64(len(suffix))||suffix)",
+      "template_hash_hex": "d3ed480edc8a386987a3a7b78c75fd94b5e62ac41ef08b887a7bebdf211144c1"
+    }
+  ]
+}
