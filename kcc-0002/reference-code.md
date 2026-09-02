@@ -87,6 +87,25 @@ function requireCovenantId(byte[32] authority) {
 }
 ```
 
+## 6. Silverscript P2PK ECDSA
+
+The following code verifies `p2pk-ecdsa-odd/v1` and `p2pk-ecdsa-even/v1`:
+
+```js
+byte constant SEC1_EVEN = 0x02;
+byte constant PARITY_MASK = 0x01;
+
+function requireP2PKECDSA(
+    byte scheme,        // 0x05 (p2pk-ecdsa-odd/v1) or 0x06 (p2pk-ecdsa-even/v1)
+    byte[32] authority, // the x coordinate of the public key
+    sig signature
+) {
+    byte prefix = SEC1_EVEN | (scheme & PARITY_MASK);
+    byte[33] publicKey = byte[33](byte[](prefix) + byte[](authority));
+    require(checkSigEcdsa(signature, publicKey));
+}
+```
+
 ### Argent reference code
 
 Argent is a language and transpiler for multi-contract, multi-application
