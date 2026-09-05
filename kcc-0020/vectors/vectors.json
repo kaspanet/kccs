@@ -1,40 +1,9 @@
 {
   "kcc": 20,
-  "title": "KCC-20 conformance vectors (first cut)",
-  "producer": "KRON — self-validated against KCC-1 §11",
-  "hash_function": "unkeyed BLAKE3 32-byte (KCC-1 §3.1); P2SH envelope uses BLAKE2b",
-  "field_order": "KCC-20 §1: amount, owner, owner_scheme, borrow_scheme, borrow_guard, extension_commitment",
-  "self_validation": {
-    "source": "KCC-1 §11",
-    "covers": "positive constructions (dispatch tags, state encoding, template hashes)",
-    "all_passed": true,
-    "checks": [
-      {
-        "name": "kcc1_11.1_dispatch_step",
-        "ok": true
-      },
-      {
-        "name": "kcc1_11.1_dispatch_dispense_record_array",
-        "ok": true
-      },
-      {
-        "name": "kcc1_11.3_state",
-        "ok": true
-      },
-      {
-        "name": "kcc1_11.4_tmpl_empty",
-        "ok": true
-      },
-      {
-        "name": "kcc1_11.4_tmpl_61_6263",
-        "ok": true
-      },
-      {
-        "name": "kcc1_11.4_tmpl_6162_63",
-        "ok": true
-      }
-    ]
-  },
+  "title": "KCC-20 conformance vectors",
+  "hash_function": "unkeyed BLAKE3, 32-byte output (KCC-1 §3.1); the P2SH envelope uses BLAKE2b",
+  "state_field_order": ["amount", "owner", "owner_scheme", "borrow_scheme", "borrow_guard", "extension_commitment"],
+  "notes": "Mirrors the Conformance Vectors section of kcc-0020.md; the two must agree. All byte strings are hexadecimal. The dispatch-tag, state-encoding, and template-hash constructions reproduce KCC-1 §11's published vectors, including the record-array dispatch anchor dispense -> 676b1a86.",
   "state_encoding": [
     {
       "name": "zero_amount_disabled_borrow",
@@ -46,8 +15,8 @@
         "borrow_guard": "0000000000000000000000000000000000000000000000000000000000000000",
         "extension_commitment": "0000000000000000000000000000000000000000000000000000000000000000"
       },
-      "expected_state_bytes_hex": "08000000000000000020010000000000000000000000000000000000000000000000000000000000000001000100200000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
-      "state_len_bytes": 112
+      "encoded_state_hex": "08000000000000000020010000000000000000000000000000000000000000000000000000000000000001000100200000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
+      "encoded_state_len": 112
     },
     {
       "name": "amount_1000_p2pkh_amount_threshold_1000",
@@ -59,8 +28,8 @@
         "borrow_guard": "e803000000000000000000000000000000000000000000000000000000000000",
         "extension_commitment": "0000000000000000000000000000000000000000000000000000000000000000"
       },
-      "expected_state_bytes_hex": "08e80300000000000020aa000000000000000000000000000000000000000000000000000000000000000101010120e803000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
-      "state_len_bytes": 112
+      "encoded_state_hex": "08e80300000000000020aa000000000000000000000000000000000000000000000000000000000000000101010120e803000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
+      "encoded_state_len": 112
     },
     {
       "name": "large_amount_covenantid_owner_hashchain",
@@ -72,8 +41,8 @@
         "borrow_guard": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
         "extension_commitment": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
       },
-      "expected_state_bytes_hex": "08ffffffffffff1f0020ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0104010320cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd20eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-      "state_len_bytes": 112
+      "encoded_state_hex": "08ffffffffffff1f0020ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0104010320cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd20eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "encoded_state_len": 112
     }
   ],
   "dispatch_tags": [
@@ -93,7 +62,7 @@
       "name": "toy_prefix51_suffix75",
       "prefix_hex": "51",
       "suffix_hex": "75",
-      "construction": "blake3(LE64(len(prefix))||prefix||LE64(len(suffix))||suffix)",
+      "construction": "blake3(LE64(len(prefix)) || prefix || LE64(len(suffix)) || suffix)",
       "template_hash_hex": "d3ed480edc8a386987a3a7b78c75fd94b5e62ac41ef08b887a7bebdf211144c1"
     }
   ],
@@ -103,7 +72,7 @@
       "category": "state",
       "spec": "KCC-20 §1",
       "reason": "amount must be non-negative.",
-      "successor_state_bytes_hex": "08010000000000008020010000000000000000000000000000000000000000000000000000000000000001000100200000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
+      "successor_state_hex": "08010000000000008020010000000000000000000000000000000000000000000000000000000000000001000100200000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
       "expected": "reject"
     },
     {
@@ -111,7 +80,7 @@
       "category": "transfer",
       "spec": "KCC-20 §2",
       "reason": "The transfer must validate that every next_states[i].owner_scheme is supported; the default configuration supports 0x00-0x04, so 0xff is unsupported and would create an unspendable state.",
-      "successor_state_bytes_hex": "08010000000000000020aa0000000000000000000000000000000000000000000000000000000000000001ff0100200000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
+      "successor_state_hex": "08010000000000000020aa0000000000000000000000000000000000000000000000000000000000000001ff0100200000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
       "expected": "reject"
     },
     {
@@ -119,9 +88,7 @@
       "category": "transfer",
       "spec": "KCC-20 §2",
       "reason": "witness[0] selects the path (0x00 normal, 0x01 borrowed); any other first byte is invalid.",
-      "scenario": {
-        "witness_first_byte": "0x02"
-      },
+      "scenario": { "witness_first_byte": "0x02" },
       "expected": "reject"
     },
     {
@@ -140,10 +107,7 @@
       "category": "transfer",
       "spec": "KCC-20 §2 / §5",
       "reason": "The leader must preserve the total token amount across the covenant family.",
-      "scenario": {
-        "total_input_amount": 1000,
-        "total_output_amount": 1001
-      },
+      "scenario": { "total_input_amount": 1000, "total_output_amount": 1001 },
       "expected": "reject"
     },
     {
@@ -151,10 +115,7 @@
       "category": "transfer",
       "spec": "KCC-20 §2 / §3",
       "reason": "The transfer is bounded by max_token_inputs (3 in the default configuration).",
-      "scenario": {
-        "max_token_inputs": 3,
-        "token_inputs": 4
-      },
+      "scenario": { "max_token_inputs": 3, "token_inputs": 4 },
       "expected": "reject"
     },
     {
@@ -162,10 +123,7 @@
       "category": "borrow",
       "spec": "KCC-20 §5",
       "reason": "disabled/v1 (0x00) rejects borrowing; a borrowed-receive path on such a leader is invalid.",
-      "scenario": {
-        "leader_borrow_scheme": "0x00 disabled/v1",
-        "witness_first_byte": "0x01"
-      },
+      "scenario": { "leader_borrow_scheme": "0x00 disabled/v1", "witness_first_byte": "0x01" },
       "expected": "reject"
     },
     {
@@ -173,12 +131,7 @@
       "category": "borrow",
       "spec": "KCC-20 §5",
       "reason": "For amount-threshold/v1 the increase must be strictly greater than the threshold; an increase equal to the threshold is rejected.",
-      "scenario": {
-        "borrow_scheme": "amount-threshold/v1",
-        "threshold": 10,
-        "leader_amount": 100,
-        "successor_amount": 110
-      },
+      "scenario": { "borrow_scheme": "amount-threshold/v1", "threshold": 10, "leader_amount": 100, "successor_amount": 110 },
       "expected": "reject"
     },
     {
@@ -201,10 +154,7 @@
       "category": "borrow",
       "spec": "KCC-20 §5",
       "reason": "The output for next_states[0] must have at least the KAS value of the borrowed input.",
-      "scenario": {
-        "borrowed_input_value_sompi": 100000,
-        "successor_output_value_sompi": 90000
-      },
+      "scenario": { "borrowed_input_value_sompi": 100000, "successor_output_value_sompi": 90000 },
       "expected": "reject"
     },
     {
@@ -212,11 +162,8 @@
       "category": "borrow",
       "spec": "KCC-20 §5",
       "reason": "For hash-chain/v1, require Hash(revealed_guard || one_time_pubkey) == borrow_guard.",
-      "scenario": {
-        "note": "borrow_guard != BLAKE3(revealed_guard || one_time_pubkey)"
-      },
+      "scenario": { "note": "borrow_guard != BLAKE3(revealed_guard || one_time_pubkey)" },
       "expected": "reject"
     }
-  ],
-  "reject_vectors_note": "Each reject vector cites the KCC-20 clause it enforces. They assert validation behavior and have no KCC-1 §11 anchor; a conforming covenant MUST reject each."
+  ]
 }
