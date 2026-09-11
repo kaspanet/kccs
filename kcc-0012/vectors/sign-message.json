@@ -1,0 +1,38 @@
+{
+  "kcc": 12,
+  "section": "6.4 kaspa_signMessage",
+  "description": "KIP-5 message signing vectors. digest = BLAKE2b-256(utf8(message)) keyed with the ASCII bytes of 'PersonalMessageSigningHash'. Each signature MUST verify as a BIP-340 Schnorr signature of digest under publicKey. Signatures were produced with the listed auxiliary randomness. A signer using other randomness produces a different valid signature. Result encoding on the wire is the 64-byte signature as 128 lowercase hexadecimal characters.",
+  "hashKey": "PersonalMessageSigningHash",
+  "vectors": [
+    {
+      "index": 0,
+      "message": "Hello Kaspa!",
+      "digest": "2e55deda4a5224208dbd4d93cfe5aa22d945eaa63172e329c49afed62f0e1510",
+      "secretKey": "0000000000000000000000000000000000000000000000000000000000000003",
+      "publicKey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "auxRand": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "40b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef522",
+      "valid": true
+    },
+    {
+      "index": 1,
+      "message": "Hello Kaspa!",
+      "digest": "2e55deda4a5224208dbd4d93cfe5aa22d945eaa63172e329c49afed62f0e1510",
+      "secretKey": "b7e151628aed2a6abf7158809cf4f3c762e7160f38b4da56a784d9045190cfef",
+      "publicKey": "dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659",
+      "auxRand": "0000000000000000000000000000000000000000000000000000000000000001",
+      "signature": "eb9e8a3c547eb91b6a7592644f328f0648bdd21aba3cd44787d429d4d790aa8b962745691f3b472ed8d65f3b770ecb4f777bd17b1d309100919b53e0e206b4c6",
+      "valid": true
+    },
+    {
+      "index": 2,
+      "message": "こんにちは世界",
+      "digest": "e2681a5031b7143ec120118a0b8041de77964853cb1b51a263e1deef8506f2eb",
+      "secretKey": "b7e151628aed2a6abf7158809cf4f3c762e7160f38b4da56a784d9045190cfef",
+      "publicKey": "dff1d77f2a671c5f36183726db2341be58feae1da2deced843240f7b502ba659",
+      "auxRand": "0000000000000000000000000000000000000000000000000000000000000001",
+      "signature": "810653d5f80206db519672362add6c98dad378844e5ba4d89a22c9f0c7092e8cecba734fff7922b656b4be3f4b1f098899c95cb5c1023dce3519208afafb59bc",
+      "valid": true
+    }
+  ]
+}
