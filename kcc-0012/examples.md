@@ -126,7 +126,39 @@ const txid = await provider.request({
 });
 ```
 
-## 6. App side: feature detection
+## 6. App side: co-signing a bundle (multi-signature)
+
+For flows that gather signatures from several parties, the app exchanges a
+`Pskb` string and asks each wallet to add its partial signatures without
+finalizing.
+
+```typescript
+import type { Pskb, TransactionId } from "./interfaces";
+
+// pskb: a "PSKB..."-prefixed bundle the app built with the SDK's PSKB class.
+const cosigned = (await provider.request({
+  method: "kaspa_signPskb",
+  params: [pskb],
+})) as Pskb;
+
+// After combining the co-signed bundles, any connected wallet can finalize,
+// extract, and submit the result in bundle order.
+const txids = (await provider.request({
+  method: "kaspa_sendRawPskb",
+  params: [combined],
+})) as TransactionId[];
+
+// Single-signer flows sign and submit under one prompt.
+const txids2 = (await provider.request({
+  method: "kaspa_sendPskb",
+  params: [pskb],
+})) as TransactionId[];
+```
+
+A submission error carries `data.submitted`, the identifiers the node has
+already accepted, so a dependent chain can be resumed rather than resent.
+
+## 7. App side: feature detection
 
 ```typescript
 async function supports(provider: KaspaProvider, method: string): Promise<boolean> {
@@ -139,7 +171,7 @@ async function supports(provider: KaspaProvider, method: string): Promise<boolea
 }
 ```
 
-## 7. Wallet side: a page-to-extension transport
+## 8. Wallet side: a page-to-extension transport
 
 KCC-12 does not specify how the provider reaches the extension. The example
 below is one common design: an in-page script which exposes the provider and

@@ -27,6 +27,8 @@ export type Amount = Uint64;
 export type Address = string;
 /** JSON text in the Kaspa WASM SDK "safe" schema (Transaction.serializeToSafeJSON). */
 export type SerializedTransaction = string;
+/** "PSKB" followed by the lowercase hex of the UTF-8 JSON bundle text (KCC-12 Section 7.8). */
+export type Pskb = string;
 
 export type SighashType = 1 | 2 | 4 | 129 | 130 | 132;
 
@@ -203,6 +205,9 @@ export interface KaspaRpcSchema {
   kaspa_sendTransaction: { params: [SendTransactionParams]; result: TransactionId };
   kaspa_signTransaction: { params: [SignTransactionParams]; result: SerializedTransaction };
   kaspa_sendRawTransaction: { params: [transaction: SerializedTransaction]; result: TransactionId };
+  kaspa_signPskb: { params: [pskb: Pskb]; result: Pskb };
+  kaspa_sendRawPskb: { params: [pskb: Pskb]; result: TransactionId[] };
+  kaspa_sendPskb: { params: [pskb: Pskb]; result: TransactionId[] };
   wallet_switchKaspaChain: { params: [SwitchChainParams]; result: null };
   wallet_requestPermissions: { params: [PermissionRequest]; result: Permission[] };
   wallet_getPermissions: { params: []; result: Permission[] };
