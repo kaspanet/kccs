@@ -60,27 +60,27 @@ import type { Address, KaspaProvider, NetworkId, ProviderRpcError } from "./inte
 
 export async function connect(provider: KaspaProvider) {
   // returns [] until the user has authorized this origin.
-  let accounts = (await provider.request({ method: "kaspa_accounts" })) as Address[];
+  let accounts = await provider.request({ method: "kaspa_accounts" });
   if (accounts.length === 0) {
     try {
-      accounts = (await provider.request({ method: "kaspa_requestAccounts" })) as Address[];
+      accounts = await provider.request({ method: "kaspa_requestAccounts" });
     } catch (e) {
       const err = e as ProviderRpcError;
       if (err.code === 4001) return null; // user declined
       throw err;
     }
   }
-  const chainId = (await provider.request({ method: "kaspa_chainId" })) as NetworkId;
+  const networkId = await provider.request({ method: "kaspa_networkId" });
 
   provider.on("accountsChanged", (next: Address[]) => {
     if (next.length === 0) console.log("disconnected or locked");
     else console.log("active account is now", next[0]);
   });
-  provider.on("chainChanged", (id: NetworkId) => {
+  provider.on("networkChanged", (id: NetworkId) => {
     console.log("network is now", id); // discard cached UTXOs, balances, etc.
   });
 
-  return { accounts, chainId };
+  return { accounts, networkId };
 }
 
 export async function disconnect(provider: KaspaProvider) {
@@ -115,10 +115,10 @@ import type { SerializedTransaction } from "./interfaces";
 // signatureScript is already set; input 1 spends the user's UTXO.
 const unsigned: SerializedTransaction = tx.serializeToSafeJSON();
 
-const signed = (await provider.request({
+const signed = await provider.request({
   method: "kaspa_signTransaction",
   params: [{ transaction: unsigned, signInputs: [{ index: 1, sighashType: 1 }] }],
-})) as SerializedTransaction;
+});
 
 const txid = await provider.request({
   method: "kaspa_sendRawTransaction",
@@ -136,23 +136,23 @@ finalizing.
 import type { Pskb, TransactionId } from "./interfaces";
 
 // pskb: a "PSKB..."-prefixed bundle the app built with the SDK's PSKB class.
-const cosigned = (await provider.request({
+const cosigned = await provider.request({
   method: "kaspa_signPskb",
   params: [pskb],
-})) as Pskb;
+});
 
-// After combining the co-signed bundles, any connected wallet can finalize,
-// extract, and submit the result in bundle order.
-const txids = (await provider.request({
+// After combining the co-signed bundles (combined: Pskb), any connected
+// wallet can finalize, extract, and submit the result in bundle order.
+const txids = await provider.request({
   method: "kaspa_sendRawPskb",
   params: [combined],
-})) as TransactionId[];
+});
 
 // Single-signer flows sign and submit under one prompt.
-const txids2 = (await provider.request({
+const txids2 = await provider.request({
   method: "kaspa_sendPskb",
   params: [pskb],
-})) as TransactionId[];
+});
 ```
 
 A submission error carries `data.submitted`, the identifiers the node has
@@ -161,14 +161,44 @@ already accepted, so a dependent chain can be resumed rather than resent.
 ## 7. App side: feature detection
 
 ```typescript
-async function supports(provider: KaspaProvider, method: string): Promise<boolean> {
+import type {
+  KaspaProvider,
+  KaspaRpcMethod,
+  RequestArguments,
+  ProviderRpcError,
+} from "./interfaces";
+
+async function supports<M extends KaspaRpcMethod>(
+  provider: KaspaProvider,
+  args: RequestArguments<M>,
+): Promise<boolean> {
   try {
-    await provider.request({ method, params: [] });
+    await provider.request(args);
     return true;
   } catch (e) {
     return (e as ProviderRpcError).code !== 4200; // any other error means "supported"
   }
 }
+
+const hasBundles = await supports(provider, {
+  method: "kaspa_signPskb",
+  params: ["PSKB00"],
+});
+```
+
+A vendor method is detected the same way once the app declares it, which
+also gives the call its types:
+
+```typescript
+declare module "./interfaces" {
+  interface KaspaRpcSchema {
+    "com.example.wallet_getVaults": { params: []; result: string[] };
+  }
+}
+
+const hasVaults = await supports(provider, {
+  method: "com.example.wallet_getVaults",
+});
 ```
 
 ## 8. Wallet side: a page-to-extension transport
@@ -180,6 +210,9 @@ forwarded to the extension background over a runtime port. The content
 script validates the origin of every message where the background then attributes
 every request to that origin.
 
+A transport relays opaque messages, so it is written untyped inside and
+exposed through the typed interface at the boundary.
+
 ```typescript
 // inpage.ts (runs in the page's JavaScript realm)
 type Pending = { resolve: (v: unknown) => void; reject: (e: unknown) => void };
@@ -187,23 +220,27 @@ const pending = new Map<string, Pending>();
 const listeners = new Map<string, Set<(...args: unknown[]) => void>>();
 const CHANNEL = "com.example.wallet";
 
-const provider: KaspaProvider = {
-  request(args) {
+const relay = {
+  request(args: { method: string; params?: unknown }): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const id = crypto.randomUUID();
       pending.set(id, { resolve, reject });
       window.postMessage({ channel: CHANNEL, kind: "request", id, ...args }, window.location.origin);
     });
   },
-  on(event, listener) {
+  on(event: string, listener: (...args: unknown[]) => void) {
     (listeners.get(event) ?? listeners.set(event, new Set()).get(event)!).add(listener);
     return this;
   },
-  removeListener(event, listener) {
+  removeListener(event: string, listener: (...args: unknown[]) => void) {
     listeners.get(event)?.delete(listener);
     return this;
   },
 };
+
+// The relay cannot prove to the compiler that each method returns that
+// method's result type; the announcement exposes it as a KaspaProvider.
+const provider = relay as unknown as KaspaProvider;
 
 window.addEventListener("message", (event) => {
   if (event.source !== window || event.origin !== window.location.origin) return;

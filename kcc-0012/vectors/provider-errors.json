@@ -3,33 +3,129 @@
   "section": "8. Error Codes",
   "description": "Assigned error codes with their names and recommended messages. Codes 4000-4999 and -32768 to -32000 not listed here are reserved.",
   "errors": [
-    { "code": 4001, "name": "User Rejected Request", "message": "User Rejected Request" },
-    { "code": 4100, "name": "Unauthorized", "message": "Unauthorized" },
-    { "code": 4200, "name": "Unsupported Method", "message": "Unsupported Method" },
-    { "code": 4900, "name": "Disconnected", "message": "Disconnected" },
-    { "code": 4901, "name": "Chain Disconnected", "message": "Chain Disconnected" },
-    { "code": 4902, "name": "Unrecognized Chain", "message": "Unrecognized Chain" },
-    { "code": -32700, "name": "Parse error", "message": "Parse error" },
-    { "code": -32600, "name": "Invalid request", "message": "Invalid request" },
-    { "code": -32601, "name": "Method not found", "message": "Method not found" },
-    { "code": -32602, "name": "Invalid params", "message": "Invalid params" },
-    { "code": -32603, "name": "Internal error", "message": "Internal error" },
-    { "code": -32000, "name": "Invalid input", "message": "Invalid input" },
-    { "code": -32001, "name": "Resource not found", "message": "Resource not found" },
-    { "code": -32002, "name": "Resource unavailable", "message": "Resource unavailable" },
-    { "code": -32003, "name": "Transaction rejected", "message": "Transaction rejected" },
-    { "code": -32004, "name": "Method not supported", "message": "Method not supported" },
-    { "code": -32005, "name": "Limit exceeded", "message": "Limit exceeded" }
+    {
+      "code": 4001,
+      "name": "User Rejected Request",
+      "message": "User Rejected Request"
+    },
+    {
+      "code": 4100,
+      "name": "Unauthorized",
+      "message": "Unauthorized"
+    },
+    {
+      "code": 4200,
+      "name": "Unsupported Method",
+      "message": "Unsupported Method"
+    },
+    {
+      "code": 4900,
+      "name": "Disconnected",
+      "message": "Disconnected"
+    },
+    {
+      "code": 4901,
+      "name": "Network Disconnected",
+      "message": "Network Disconnected"
+    },
+    {
+      "code": 4902,
+      "name": "Unrecognized Network",
+      "message": "Unrecognized Network"
+    },
+    {
+      "code": -32700,
+      "name": "Parse error",
+      "message": "Parse error"
+    },
+    {
+      "code": -32600,
+      "name": "Invalid request",
+      "message": "Invalid request"
+    },
+    {
+      "code": -32601,
+      "name": "Method not found",
+      "message": "Method not found"
+    },
+    {
+      "code": -32602,
+      "name": "Invalid params",
+      "message": "Invalid params"
+    },
+    {
+      "code": -32603,
+      "name": "Internal error",
+      "message": "Internal error"
+    },
+    {
+      "code": -32000,
+      "name": "Invalid input",
+      "message": "Invalid input"
+    },
+    {
+      "code": -32001,
+      "name": "Resource not found",
+      "message": "Resource not found"
+    },
+    {
+      "code": -32002,
+      "name": "Resource unavailable",
+      "message": "Resource unavailable"
+    },
+    {
+      "code": -32003,
+      "name": "Transaction rejected",
+      "message": "Transaction rejected",
+      "meaning": ""
+    },
+    {
+      "code": -32004,
+      "name": "Method not supported",
+      "message": "Method not supported"
+    },
+    {
+      "code": -32005,
+      "name": "Limit exceeded",
+      "message": "Limit exceeded"
+    }
   ],
   "conditions": [
-    { "condition": "method not supported by the provider", "code": 4200 },
-    { "condition": "restricted method called by an unauthorized origin", "code": 4100 },
-    { "condition": "params do not match the method definition", "code": -32602 },
-    { "condition": "user declined a request that needs consent", "code": 4001 },
-    { "condition": "provider disconnected from all networks", "code": 4900 },
-    { "condition": "wallet_switchKaspaChain to an unsupported network", "code": 4902 },
-    { "condition": "client rejected a submitted transaction", "code": -32003 },
-    { "condition": "duplicate prompting request while one is pending", "code": -32002 },
-    { "condition": "kaspa_signTransaction input script type the wallet cannot sign", "code": -32000 }
+    {
+      "condition": "method not supported by the provider",
+      "code": 4200
+    },
+    {
+      "condition": "restricted method called by an unauthorized origin",
+      "code": 4100
+    },
+    {
+      "condition": "params do not match the method definition",
+      "code": -32602
+    },
+    {
+      "condition": "user declined a request that needs consent",
+      "code": 4001
+    },
+    {
+      "condition": "a method that requires the wallet's remote is called while the provider is disconnected from all networks",
+      "code": 4900
+    },
+    {
+      "condition": "wallet_switchNetwork to an unsupported network",
+      "code": 4902
+    },
+    {
+      "condition": "the remote rejected a submitted transaction",
+      "code": -32003
+    },
+    {
+      "condition": "duplicate prompting request while one is pending",
+      "code": -32002
+    },
+    {
+      "condition": "kaspa_signTransaction input script type the wallet cannot sign",
+      "code": -32000
+    }
   ]
 }

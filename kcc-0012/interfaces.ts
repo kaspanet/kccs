@@ -87,19 +87,29 @@ export interface SerializedTransactionObject {
   payload: Hex;
 }
 
-export interface RequestArguments {
-  readonly method: string;
-  readonly params?: readonly unknown[] | object;
+export type RequestArguments<M extends KaspaRpcMethod = KaspaRpcMethod> =
+  KaspaRpcSchema[M]["params"] extends readonly []
+    ? { readonly method: M; readonly params?: KaspaRpcSchema[M]["params"] }
+    : { readonly method: M; readonly params: KaspaRpcSchema[M]["params"] };
+
+/**
+ * Additional information on an error. `submitted` and `pskb` are set by the
+ * bundle-submission methods; a wallet MAY add members of its own.
+ */
+export interface ProviderErrorData {
+  readonly submitted?: readonly TransactionId[];
+  readonly pskb?: Pskb;
+  readonly [key: string]: unknown;
 }
 
 export interface ProviderRpcError extends Error {
   message: string;
   code: number;
-  data?: unknown;
+  data?: ProviderErrorData;
 }
 
 export interface ProviderConnectInfo {
-  readonly chainId: NetworkId;
+  readonly networkId: NetworkId;
 }
 
 export interface ProviderMessage {
@@ -110,17 +120,22 @@ export interface ProviderMessage {
 export interface KaspaProviderEvents {
   connect: (info: ProviderConnectInfo) => void;
   disconnect: (error: ProviderRpcError) => void;
-  chainChanged: (chainId: NetworkId) => void;
+  networkChanged: (networkId: NetworkId) => void;
   accountsChanged: (accounts: Address[]) => void;
   message: (message: ProviderMessage) => void;
 }
 
+/**
+ * A wallet that serves vendor methods or emits vendor events widens
+ * KaspaRpcSchema and KaspaProviderEvents by declaration merging rather than
+ * weakening these signatures.
+ */
 export interface KaspaProvider {
-  request(args: RequestArguments): Promise<unknown>;
+  request<M extends KaspaRpcMethod>(
+    args: RequestArguments<M>,
+  ): Promise<KaspaRpcSchema[M]["result"]>;
   on<E extends keyof KaspaProviderEvents>(event: E, listener: KaspaProviderEvents[E]): this;
-  on(event: string, listener: (...args: unknown[]) => void): this;
   removeListener<E extends keyof KaspaProviderEvents>(event: E, listener: KaspaProviderEvents[E]): this;
-  removeListener(event: string, listener: (...args: unknown[]) => void): this;
 }
 
 export const KASPA_ANNOUNCE_PROVIDER_EVENT = "kaspa:announceProvider" as const;
@@ -157,10 +172,14 @@ declare global {
   }
 }
 
-export interface Caveat {
-  type: string;
-  value: unknown;
+/** Caveat types and their value types, keyed by type name (Section 6.12). */
+export interface CaveatTypes {
+  restrictReturnedAccounts: Address[];
 }
+
+export type Caveat = {
+  [K in keyof CaveatTypes]: { type: K; value: CaveatTypes[K] };
+}[keyof CaveatTypes];
 
 export interface Permission {
   invoker: string;
@@ -192,15 +211,15 @@ export interface SignTransactionParams {
   signInputs: SignInput[];
 }
 
-export interface SwitchChainParams {
-  chainId: NetworkId;
+export interface SwitchNetworkParams {
+  networkId: NetworkId;
 }
 
 /** params and result of every method, keyed by method name. */
 export interface KaspaRpcSchema {
   kaspa_requestAccounts: { params: []; result: Address[] };
   kaspa_accounts: { params: []; result: Address[] };
-  kaspa_chainId: { params: []; result: NetworkId };
+  kaspa_networkId: { params: []; result: NetworkId };
   kaspa_signMessage: { params: [message: string, address: Address]; result: Hex };
   kaspa_sendTransaction: { params: [SendTransactionParams]; result: TransactionId };
   kaspa_signTransaction: { params: [SignTransactionParams]; result: SerializedTransaction };
@@ -208,7 +227,7 @@ export interface KaspaRpcSchema {
   kaspa_signPskb: { params: [pskb: Pskb]; result: Pskb };
   kaspa_sendRawPskb: { params: [pskb: Pskb]; result: TransactionId[] };
   kaspa_sendPskb: { params: [pskb: Pskb]; result: TransactionId[] };
-  wallet_switchKaspaChain: { params: [SwitchChainParams]; result: null };
+  wallet_switchNetwork: { params: [SwitchNetworkParams]; result: null };
   wallet_requestPermissions: { params: [PermissionRequest]; result: Permission[] };
   wallet_getPermissions: { params: []; result: Permission[] };
   wallet_revokePermissions: { params: [PermissionRequest]; result: null };
@@ -219,38 +238,37 @@ export type KaspaRpcMethod = keyof KaspaRpcSchema;
 export const KASPA_REQUIRED_METHODS = [
   "kaspa_requestAccounts",
   "kaspa_accounts",
-  "kaspa_chainId",
+  "kaspa_networkId",
   "wallet_requestPermissions",
   "wallet_getPermissions",
   "wallet_revokePermissions",
+] as const satisfies readonly KaspaRpcMethod[];
+
+/** The only methods that may reject with 4900 while disconnected. */
+export const KASPA_METHODS_REQUIRING_REMOTE = [
+  "kaspa_sendTransaction",
+  "kaspa_sendRawTransaction",
+  "kaspa_sendRawPskb",
+  "kaspa_sendPskb",
 ] as const satisfies readonly KaspaRpcMethod[];
 
 export const KASPA_UNRESTRICTED_METHODS = [
   "kaspa_requestAccounts",
   "kaspa_accounts",
-  "kaspa_chainId",
-  "wallet_switchKaspaChain",
+  "kaspa_networkId",
+  "wallet_switchNetwork",
   "wallet_requestPermissions",
   "wallet_getPermissions",
   "wallet_revokePermissions",
 ] as const satisfies readonly KaspaRpcMethod[];
-
-/** Typed convenience wrapper over KaspaProvider.request. */
-export interface TypedKaspaProvider extends KaspaProvider {
-  request<M extends KaspaRpcMethod>(args: {
-    readonly method: M;
-    readonly params?: KaspaRpcSchema[M]["params"];
-  }): Promise<KaspaRpcSchema[M]["result"]>;
-  request(args: RequestArguments): Promise<unknown>;
-}
 
 export const PROVIDER_ERRORS = {
   USER_REJECTED_REQUEST: { code: 4001, message: "User Rejected Request" },
   UNAUTHORIZED: { code: 4100, message: "Unauthorized" },
   UNSUPPORTED_METHOD: { code: 4200, message: "Unsupported Method" },
   DISCONNECTED: { code: 4900, message: "Disconnected" },
-  CHAIN_DISCONNECTED: { code: 4901, message: "Chain Disconnected" },
-  UNRECOGNIZED_CHAIN: { code: 4902, message: "Unrecognized Chain" },
+  NETWORK_DISCONNECTED: { code: 4901, message: "Network Disconnected" },
+  UNRECOGNIZED_NETWORK: { code: 4902, message: "Unrecognized Network" },
 } as const;
 
 export const RPC_ERRORS = {
@@ -270,7 +288,7 @@ export const RPC_ERRORS = {
 /** Constructs a ProviderRpcError. */
 export function providerError(
   spec: { code: number; message: string },
-  data?: unknown,
+  data?: ProviderErrorData,
 ): ProviderRpcError {
   const error = new Error(spec.message) as ProviderRpcError;
   error.code = spec.code;
