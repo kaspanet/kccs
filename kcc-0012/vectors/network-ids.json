@@ -1,0 +1,89 @@
+{
+  "kcc": 12,
+  "section": "2. Network Identifiers",
+  "description": "Strings that are, and are not, canonical network identifiers. An implementation MUST accept every entry in valid and MUST reject every entry in invalid.",
+  "valid": [
+    {
+      "id": "mainnet",
+      "type": "mainnet",
+      "suffix": null,
+      "addressPrefix": "kaspa"
+    },
+    {
+      "id": "testnet-10",
+      "type": "testnet",
+      "suffix": 10,
+      "addressPrefix": "kaspatest"
+    },
+    {
+      "id": "testnet-11",
+      "type": "testnet",
+      "suffix": 11,
+      "addressPrefix": "kaspatest"
+    },
+    {
+      "id": "testnet-12",
+      "type": "testnet",
+      "suffix": 12,
+      "addressPrefix": "kaspatest"
+    },
+    {
+      "id": "devnet",
+      "type": "devnet",
+      "suffix": null,
+      "addressPrefix": "kaspadev"
+    },
+    {
+      "id": "simnet",
+      "type": "simnet",
+      "suffix": null,
+      "addressPrefix": "kaspasim"
+    }
+  ],
+  "invalid": [
+    {
+      "id": "testnet",
+      "reason": "testnet requires a suffix"
+    },
+    {
+      "id": "testnet-010",
+      "reason": "leading zero in suffix"
+    },
+    {
+      "id": "testnet-",
+      "reason": "empty suffix"
+    },
+    {
+      "id": "testnet_10",
+      "reason": "underscore separator"
+    },
+    {
+      "id": "kaspa_mainnet",
+      "reason": "wallet-specific spelling"
+    },
+    {
+      "id": "kaspa_testnet_10",
+      "reason": "wallet-specific spelling"
+    },
+    {
+      "id": "Mainnet",
+      "reason": "case"
+    },
+    {
+      "id": "MAINNET",
+      "reason": "case"
+    },
+    {
+      "id": "mainnet ",
+      "reason": "trailing whitespace"
+    },
+    {
+      "id": " mainnet",
+      "reason": "leading whitespace"
+    },
+    {
+      "id": "",
+      "reason": "empty"
+    }
+  ]
+}

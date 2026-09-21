@@ -1,0 +1,115 @@
+{
+  "kcc": 12,
+  "section": "7.5 Serialized transactions, 6.6 kaspa_signTransaction",
+  "description": "Structural validation of SerializedTransaction text. accept=true texts MUST be accepted; accept=false texts MUST be rejected with code -32602 when received as params. The id member of these vectors is a placeholder of 64 zero characters: consumers MUST NOT trust id (Section 7.5), so no vector asserts its value. signTransaction gives a request whose response MUST satisfy every listed invariant. The signature value itself depends on the wallet's key and is not asserted.",
+  "serializedTransaction": [
+    {
+      "name": "two P2PK inputs, one pre-signed, one unsigned; one P2SH output",
+      "accept": true,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "same transaction with storageMass carried under the alias mass",
+      "accept": true,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"payload\":\"48656c6c6f204b6173706121\",\"mass\":\"0\"}"
+    },
+    {
+      "name": "amount is a JSON number",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":250000000,\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "value has a leading zero",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"0349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "input lacks a utxo entry",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\"}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "signatureScript is absent",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "payload has odd length",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b617370612\"}"
+    },
+    {
+      "name": "payload has a 0x prefix",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"0x48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "scriptPublicKey lacks the version prefix",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "subnetworkId is not 40 characters",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"00000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "index is negative",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":-1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "lockTime is a JSON number",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":0,\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "id is absent",
+      "accept": false,
+      "text": "{\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "inputs is empty",
+      "accept": false,
+      "text": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}"
+    },
+    {
+      "name": "text is a JSON array",
+      "accept": false,
+      "text": "[{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}]"
+    }
+  ],
+  "signTransaction": {
+    "request": {
+      "method": "kaspa_signTransaction",
+      "params": [
+        {
+          "transaction": "{\"id\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"version\":0,\"inputs\":[{\"transactionId\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"index\":0,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"4140b9bb2be0ae02607279eda64015a8d86e3763279170340b8243f7ce5344d77aff1191598baf2fd26149cac3b4b12c2c433261c00834db6098cb172aa48ef52201\",\"utxo\":{\"address\":null,\"amount\":\"100000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1000\",\"isCoinbase\":false,\"covenantId\":null}},{\"transactionId\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"index\":1,\"sequence\":\"0\",\"sigOpCount\":1,\"signatureScript\":\"\",\"utxo\":{\"amount\":\"250000000\",\"scriptPublicKey\":\"000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac\",\"blockDaaScore\":\"1200\",\"isCoinbase\":false}}],\"outputs\":[{\"value\":\"349900000\",\"scriptPublicKey\":\"0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87\",\"covenant\":null}],\"subnetworkId\":\"0000000000000000000000000000000000000000\",\"lockTime\":\"0\",\"gas\":\"0\",\"storageMass\":\"0\",\"payload\":\"48656c6c6f204b6173706121\"}",
+          "signInputs": [
+            {
+              "index": 1,
+              "sighashType": 1
+            }
+          ]
+        }
+      ]
+    },
+    "invariants": [
+      "response is a SerializedTransaction that parses",
+      "response.inputs[0].signatureScript equals the request value byte for byte",
+      "response.inputs[1].signatureScript is 132 hexadecimal characters, begins with 41 and ends with 01",
+      "every other member of response equals the request value, except id",
+      "response.id is 64 hexadecimal characters"
+    ],
+    "fee": "100000",
+    "displayed": {
+      "outputs": [
+        {
+          "scriptPublicKey": "0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87",
+          "value": "349900000"
+        }
+      ],
+      "payloadPresent": true
+    }
+  }
+}
