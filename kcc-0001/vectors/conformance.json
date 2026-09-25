@@ -14,7 +14,7 @@
       "encode_scalar": "Encode the typed logical scalar value as a standalone argument.",
       "decode_arguments": "Decode argument_hex as the complete canonical push sequence for argument_types, using records when present; no dispatch tag or redeem script is included.",
       "decode_state": "Decode encoded_hex as the complete encoded state for the ordered fields.",
-      "validate_state_layout": "Check that the ordered fields and any referenced records satisfy the fixed-width state rules.",
+      "validate_state_layout": "Check that the ordered fields and any referenced records use supported KCC-1 types.",
       "validate_argument_type": "Check that type and any referenced records are permitted invocation argument types.",
       "validate_entrypoints": "Check the entrypoints together as one program, using any supplied record definitions."
     }
@@ -178,7 +178,7 @@
       "type": "string",
       "value": "Kaspa",
       "standalone_argument_hex": "054b61737061",
-      "state_payload_hex": null
+      "state_payload_hex": "4b61737061"
     },
     {
       "type": "int",
@@ -645,6 +645,12 @@
         "encoded_hex": "200707070707070707070707070707070707070707070707070707070707070707"
       },
       {
+        "name": "label",
+        "type": "string",
+        "value": "Kaspa",
+        "encoded_hex": "054b61737061"
+      },
+      {
         "name": "counter",
         "type": "int",
         "value": -5,
@@ -657,8 +663,8 @@
         "encoded_hex": "0101"
       }
     ],
-    "encoded_length": 44,
-    "encoded_hex": "2007070707070707070707070707070707070707070707070707070707070707070805000000000000800101"
+    "encoded_length": 50,
+    "encoded_hex": "200707070707070707070707070707070707070707070707070707070707070707054b617370610805000000000000800101"
   },
   "template_hashes": [
     {
@@ -1068,56 +1074,6 @@
       "expected": "reject",
       "rule": "3.7.1",
       "reason": "Each state field must be encoded as one data push."
-    },
-    {
-      "id": "state-string",
-      "operation": "validate_state_layout",
-      "fields": [
-        {
-          "name": "value",
-          "type": "string"
-        }
-      ],
-      "expected": "reject",
-      "rule": "3.7.1",
-      "reason": "State must not contain string or dynamic-array fields, including inside records."
-    },
-    {
-      "id": "state-dynamic-array",
-      "operation": "validate_state_layout",
-      "fields": [
-        {
-          "name": "value",
-          "type": "int[]"
-        }
-      ],
-      "expected": "reject",
-      "rule": "3.7.1",
-      "reason": "State must not contain string or dynamic-array fields, including inside records."
-    },
-    {
-      "id": "state-record-with-dynamic-leaf",
-      "operation": "validate_state_layout",
-      "fields": [
-        {
-          "name": "value",
-          "type": "Variable"
-        }
-      ],
-      "records": [
-        {
-          "name": "Variable",
-          "fields": [
-            {
-              "name": "items",
-              "type": "int[]"
-            }
-          ]
-        }
-      ],
-      "expected": "reject",
-      "rule": "3.7.1",
-      "reason": "State must not contain string or dynamic-array fields, including inside records."
     },
     {
       "id": "dynamic-array-zero-width-element",
