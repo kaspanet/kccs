@@ -1,9 +1,9 @@
-# KCC2 reference code
+# KCC-2 Reference Code
 
-This document illustrates KCC2 authority checks in current
-[Silverscript](https://github.com/kaspanet/silverscript) and
-[Argent](https://github.com/argent-lang/argent) syntax. It is non-normative;
-KCC2 Sections 2 through 5 define the required semantics.
+This document illustrates non-normative [KCC-2](../kcc-0002.md) authority checks in
+Silverscript and Argent syntax.
+KCC-2 Section 2 defines the required semantics. The snippets are illustrative
+and are not a demonstrated conformance-passing implementation.
 
 For signature schemes, the higher-level convention defines the signed message,
 signature encoding, and witness layout.
@@ -28,12 +28,7 @@ function requireP2PKHSchnorr(
     pubkey publicKey,
     sig signature
 ) {
-    byte[32] publicKeyHash = blake3WithKey(
-        byte[](publicKey),
-        byte[32](
-            byte[]("PublicKeyHash") + byte[19](0x00000000000000000000000000000000000000)
-        )
-    );
+    byte[32] publicKeyHash = blake3(byte[](publicKey));
     require(publicKeyHash == authority);
     require(checkSig(signature, publicKey));
 }
@@ -51,12 +46,7 @@ function requireP2PKHECDSA(
     byte[33] publicKey,
     sig signature
 ) {
-    byte[32] publicKeyHash = blake3WithKey(
-        byte[](publicKey),
-        byte[32](
-            byte[]("PublicKeyHash") + byte[19](0x00000000000000000000000000000000000000)
-        )
-    );
+    byte[32] publicKeyHash = blake3(byte[](publicKey));
     require(publicKeyHash == authority);
 
     // May not be supported by the Silverscript version in use.
@@ -92,7 +82,7 @@ function requireCovenantId(byte[32] authority) {
 Argent is a language and transpiler for multi-contract, multi-application
 protocols built on Silverscript. It compiles Argent programs to Silverscript.
 Cross-covenant introspection and state-transition validation are part of its
-core domain, making Argent a natural higher-level example of KCC2 authority
+core domain, making Argent a natural higher-level example of KCC-2 authority
 schemes.
 
 Argent's `cov_id.co_spent()` is a shortcut for the same minimum covenant-ID

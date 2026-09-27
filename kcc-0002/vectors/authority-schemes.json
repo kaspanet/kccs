@@ -1,0 +1,326 @@
+{
+  "constructions": [
+    {
+      "id": "p2pk-schnorr",
+      "scheme_byte": "00",
+      "scheme": "p2pk-schnorr/v1",
+      "value_type": "pubkey",
+      "public_key": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "authority_value": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "argument_encoding": "2079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "state_encoding": "2079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+    },
+    {
+      "id": "p2pkh-schnorr",
+      "scheme_byte": "01",
+      "scheme": "p2pkh-schnorr/v1",
+      "value_type": "byte[32]",
+      "public_key": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "authority_value": "f9f2a0b353f482f415281da3a00929d08a7d9a6498054f5ef6623b5580e607f7",
+      "argument_encoding": "20f9f2a0b353f482f415281da3a00929d08a7d9a6498054f5ef6623b5580e607f7",
+      "state_encoding": "20f9f2a0b353f482f415281da3a00929d08a7d9a6498054f5ef6623b5580e607f7"
+    },
+    {
+      "id": "p2pkh-ecdsa",
+      "scheme_byte": "02",
+      "scheme": "p2pkh-ecdsa/v1",
+      "value_type": "byte[32]",
+      "public_key": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "authority_value": "1a15d6547364ad963c3b840e885639bb8136a4de757c0e7cf63f5de2f1cfbdbe",
+      "argument_encoding": "201a15d6547364ad963c3b840e885639bb8136a4de757c0e7cf63f5de2f1cfbdbe",
+      "state_encoding": "201a15d6547364ad963c3b840e885639bb8136a4de757c0e7cf63f5de2f1cfbdbe"
+    },
+    {
+      "id": "p2sh",
+      "scheme_byte": "03",
+      "scheme": "p2sh/v1",
+      "value_type": "byte[32]",
+      "redeem_script": "51",
+      "authority_value": "ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d",
+      "argument_encoding": "20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d",
+      "state_encoding": "20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d",
+      "script_public_key": {
+        "version": 0,
+        "script": "aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87"
+      }
+    },
+    {
+      "id": "covenant-id",
+      "scheme_byte": "04",
+      "scheme": "covenant-id/v1",
+      "value_type": "byte[32]",
+      "covenant_id": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "authority_value": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "argument_encoding": "20000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "state_encoding": "20000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    }
+  ],
+  "approval_checks": [
+    {
+      "id": "p2pk-valid",
+      "construction": "p2pk-schnorr",
+      "context": {
+        "public_key": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": true
+      },
+      "expected": true
+    },
+    {
+      "id": "p2pk-invalid-signature",
+      "construction": "p2pk-schnorr",
+      "context": {
+        "public_key": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": false
+      },
+      "expected": false
+    },
+    {
+      "id": "p2pk-wrong-key",
+      "construction": "p2pk-schnorr",
+      "context": {
+        "public_key": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "signature_valid": true
+      },
+      "expected": false
+    },
+    {
+      "id": "schnorr-valid",
+      "construction": "p2pkh-schnorr",
+      "context": {
+        "public_key": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": true
+      },
+      "expected": true
+    },
+    {
+      "id": "schnorr-invalid-signature",
+      "construction": "p2pkh-schnorr",
+      "context": {
+        "public_key": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": false
+      },
+      "expected": false
+    },
+    {
+      "id": "schnorr-wrong-key",
+      "construction": "p2pkh-schnorr",
+      "context": {
+        "public_key": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "signature_valid": true
+      },
+      "expected": false
+    },
+    {
+      "id": "schnorr-wrong-length",
+      "construction": "p2pkh-schnorr",
+      "context": {
+        "public_key": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": true
+      },
+      "expected": false
+    },
+    {
+      "id": "ecdsa-valid",
+      "construction": "p2pkh-ecdsa",
+      "context": {
+        "public_key": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": true
+      },
+      "expected": true
+    },
+    {
+      "id": "ecdsa-invalid-signature",
+      "construction": "p2pkh-ecdsa",
+      "context": {
+        "public_key": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": false
+      },
+      "expected": false
+    },
+    {
+      "id": "ecdsa-wrong-key",
+      "construction": "p2pkh-ecdsa",
+      "context": {
+        "public_key": "0379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": true
+      },
+      "expected": false
+    },
+    {
+      "id": "ecdsa-wrong-length",
+      "construction": "p2pkh-ecdsa",
+      "context": {
+        "public_key": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "signature_valid": true
+      },
+      "expected": false
+    },
+    {
+      "id": "p2sh-valid",
+      "construction": "p2sh",
+      "context": {
+        "input_script_public_keys": [
+          {
+            "version": 0,
+            "script": "aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87"
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "id": "p2sh-later-input",
+      "construction": "p2sh",
+      "context": {
+        "input_script_public_keys": [
+          {
+            "version": 0,
+            "script": "aa20000000000000000000000000000000000000000000000000000000000000000087"
+          },
+          {
+            "version": 0,
+            "script": "aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87"
+          }
+        ]
+      },
+      "expected": true
+    },
+    {
+      "id": "p2sh-wrong-version",
+      "construction": "p2sh",
+      "context": {
+        "input_script_public_keys": [
+          {
+            "version": 1,
+            "script": "aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87"
+          }
+        ]
+      },
+      "expected": false
+    },
+    {
+      "id": "p2sh-wrong-hash",
+      "construction": "p2sh",
+      "context": {
+        "input_script_public_keys": [
+          {
+            "version": 0,
+            "script": "aa20000000000000000000000000000000000000000000000000000000000000000087"
+          }
+        ]
+      },
+      "expected": false
+    },
+    {
+      "id": "p2sh-missing-input",
+      "construction": "p2sh",
+      "context": {
+        "input_script_public_keys": []
+      },
+      "expected": false
+    },
+    {
+      "id": "covenant-self",
+      "construction": "covenant-id",
+      "context": {
+        "input_covenant_ids": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+        ],
+        "active_input_index": 0,
+        "output_covenant_ids": []
+      },
+      "expected": true
+    },
+    {
+      "id": "covenant-other-input",
+      "construction": "covenant-id",
+      "context": {
+        "input_covenant_ids": [
+          null,
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+        ],
+        "active_input_index": 0,
+        "output_covenant_ids": []
+      },
+      "expected": true
+    },
+    {
+      "id": "covenant-wrong-id",
+      "construction": "covenant-id",
+      "context": {
+        "input_covenant_ids": [
+          "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        ],
+        "active_input_index": 0,
+        "output_covenant_ids": []
+      },
+      "expected": false
+    },
+    {
+      "id": "covenant-output-only",
+      "construction": "covenant-id",
+      "context": {
+        "input_covenant_ids": [
+          null
+        ],
+        "active_input_index": 0,
+        "output_covenant_ids": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+        ]
+      },
+      "expected": false
+    }
+  ],
+  "registry_checks": [
+    {
+      "scheme_byte": "00",
+      "assigned": true,
+      "custom": false
+    },
+    {
+      "scheme_byte": "01",
+      "assigned": true,
+      "custom": false
+    },
+    {
+      "scheme_byte": "02",
+      "assigned": true,
+      "custom": false
+    },
+    {
+      "scheme_byte": "03",
+      "assigned": true,
+      "custom": false
+    },
+    {
+      "scheme_byte": "04",
+      "assigned": true,
+      "custom": false
+    },
+    {
+      "scheme_byte": "05",
+      "assigned": false,
+      "custom": false
+    },
+    {
+      "scheme_byte": "7f",
+      "assigned": false,
+      "custom": false
+    },
+    {
+      "scheme_byte": "80",
+      "assigned": false,
+      "custom": true
+    },
+    {
+      "scheme_byte": "bf",
+      "assigned": false,
+      "custom": true
+    },
+    {
+      "scheme_byte": "ff",
+      "assigned": false,
+      "custom": true
+    }
+  ]
+}
