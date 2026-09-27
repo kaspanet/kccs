@@ -60,6 +60,70 @@
     "witness_push_hex": "42004444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
     "dispatch_tag_push_hex": "0479c71c23"
   },
+  "standard_transfer": {
+    "common": {
+      "leader_state": {
+        "amount": 1000,
+        "owner_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+        "owner_scheme_hex": "00",
+        "borrow_scheme_hex": "00",
+        "borrow_guard_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "extension_commitment_hex": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "delegate_amounts": [],
+      "max_token_inputs": 3,
+      "next_state_amounts": [600, 400],
+      "next_state_owner_schemes_hex": ["00", "01"],
+      "next_state_extension_commitments_hex": ["0000000000000000000000000000000000000000000000000000000000000000", "0000000000000000000000000000000000000000000000000000000000000000"],
+      "witness_hex": "004444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+    },
+    "note": "Each case starts from common, whose successors are the next_states of transfer_arguments, and changes only the fields listed. The token inputs are the leader plus one delegate per entry of delegate_amounts. Signature checks are stipulated to succeed; signature_dependent marks cases whose outcome depends on a signature verifying.",
+    "cases": [
+      {
+        "id": "negative-amount",
+        "next_state_amounts": [-600, 1600],
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "successor amount is negative"
+      },
+      {
+        "id": "unsupported-owner-scheme",
+        "next_state_owner_schemes_hex": ["00", "7f"],
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "owner_scheme is not supported by the configuration"
+      },
+      {
+        "id": "invalid-witness-path-byte",
+        "witness_hex": "024444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "witness path byte 0x02 is reserved"
+      },
+      {
+        "id": "extension-commitment-not-preserved",
+        "next_state_extension_commitments_hex": ["0000000000000000000000000000000000000000000000000000000000000000", "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"],
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "successor extension_commitment differs from the inputs"
+      },
+      {
+        "id": "amount-not-preserved",
+        "next_state_amounts": [600, 500],
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "total successor amount 1100 does not equal total input amount 1000"
+      },
+      {
+        "id": "over-max-token-inputs",
+        "delegate_amounts": [100, 100, 100],
+        "next_state_amounts": [600, 700],
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "4 token inputs exceed max_token_inputs 3"
+      }
+    ]
+  },
   "owner_witness": [
     {
       "scheme": "p2pk-schnorr/v1",
@@ -142,7 +206,7 @@
       "owner_scheme_hex": "01",
       "extension_commitment_hex": "0000000000000000000000000000000000000000000000000000000000000000"
     },
-    "note": "The successor preserves every field not listed. Signature checks are stipulated to succeed; signature_dependent marks cases whose witness carries a signature.",
+    "note": "The successor preserves every field not listed; successor_owner_hex, leader_kas_value_sompi and successor_kas_value_sompi override or add to it where present. Signature checks are stipulated to succeed; signature_dependent marks cases whose outcome depends on a signature verifying.",
     "cases": [
       {
         "id": "threshold-exceeded",
@@ -195,7 +259,7 @@
         "successor_amount": 1001,
         "successor_borrow_guard_hex": "46530c9d75f7a5a1ce01b4e04cd8833f5f30c2482f99d855e3841279a8bcb8cc",
         "witness_hex": "01c1addceaf72a21a322c888e10e2f34445b063c3ca61fe7a1614f2d382961f0eeb3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b34444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
-        "signature_dependent": true,
+        "signature_dependent": false,
         "result": "reject",
         "reason": "borrowed successor does not carry the expected next_borrow_guard"
       },
@@ -209,6 +273,43 @@
         "signature_dependent": false,
         "result": "reject",
         "reason": "unassigned borrow_scheme value"
+      },
+      {
+        "id": "successor-changes-owner",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "f401000000000000000000000000000000000000000000000000000000000000",
+        "successor_amount": 1501,
+        "successor_borrow_guard_hex": "f401000000000000000000000000000000000000000000000000000000000000",
+        "successor_owner_hex": "2222222222222222222222222222222222222222222222222222222222222222",
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "borrowed successor does not preserve owner"
+      },
+      {
+        "id": "successor-reduces-kas-value",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "f401000000000000000000000000000000000000000000000000000000000000",
+        "successor_amount": 1501,
+        "successor_borrow_guard_hex": "f401000000000000000000000000000000000000000000000000000000000000",
+        "leader_kas_value_sompi": 100000000,
+        "successor_kas_value_sompi": 99999999,
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "borrowed successor output carries less KAS than the borrowed input"
+      },
+      {
+        "id": "hash-chain-link-mismatch",
+        "borrow_scheme_hex": "03",
+        "leader_borrow_guard_hex": "46530c9d75f7a5a1ce01b4e04cd8833f5f30c2482f99d855e3841279a8bcb8cc",
+        "successor_amount": 1001,
+        "successor_borrow_guard_hex": "7c39893345dd20342a5b0b5dd3459276e4fee0cfab947e720b18be5af5500f99",
+        "witness_hex": "017c39893345dd20342a5b0b5dd3459276e4fee0cfab947e720b18be5af5500f99b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b34444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+        "revealed_link_hash_hex": "54b9c2f64c32236324a93ad2d57da6c73d5ff733ef133b69e0da978f5ba00a00",
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "revealed link does not hash to the leader's borrow_guard"
       }
     ]
   }
