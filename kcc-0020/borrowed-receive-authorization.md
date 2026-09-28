@@ -1,7 +1,7 @@
-# KCC20 Borrowed Receive Authorization
+# KCC-20 Borrowed Receive Authorization
 
 Borrowed Receive is defined in
-[KCC20 Section 5](../kcc-0020.md#5-borrowed-receive).
+[KCC-20 Section 5](../kcc-0020.md#5-borrowed-receive).
 
 ## Motivation
 
@@ -12,7 +12,7 @@ For token transfers, this means the sender normally funds each new recipient
 token UTXO with enough KAS, or the recipient co-signs and supplies an existing
 UTXO.
 
-Borrowed Receive allows the sender to use an existing recipient KCC20 UTXO as
+Borrowed Receive allows the sender to use an existing recipient KCC-20 UTXO as
 the receive target. Instead of creating a new recipient token UTXO, the sender
 consumes the existing UTXO and recreates it in place with a larger token amount.
 The recipient's normal owner authorization is not used, the KAS value cannot
@@ -29,7 +29,7 @@ one.
 
 ## Borrow authorization
 
-Each KCC20 state contains a `borrow_scheme` and a 32-byte `borrow_guard`.
+Each KCC-20 state contains a `borrow_scheme` and a 32-byte `borrow_guard`.
 `borrow_scheme` selects the authorization rule, while `borrow_guard` holds its
 parameter or evolving state.
 
@@ -69,7 +69,7 @@ is a one-time authorization bound to its own signing key and advances
 `borrow_guard` when used. A wallet can prepare a finite chain and release links at will to authorize individual borrows.
 
 The idea originates in Rivest and Shamir's [PayWord and MicroMint: Two Simple
-Micropayment Schemes](https://people.csail.mit.edu/rivest/pubs/RS96a.pdf). KCC20
+Micropayment Schemes](https://people.csail.mit.edu/rivest/pubs/RS96a.pdf). KCC-20
 adapts the one-way hash-chain construction by binding each link to a distinct
 one-time Schnorr key.
 
