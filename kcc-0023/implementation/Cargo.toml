@@ -1,0 +1,10 @@
+[package]
+name = "kcc-0023"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.91"
+
+[dependencies]
+kaspa-consensus-core = { git = "https://github.com/kaspanet/rusty-kaspa", rev = "cfafeb4c093fa37a303f1b9f19c58f986b870ce3" }
+kaspa-hashes = { git = "https://github.com/kaspanet/rusty-kaspa", rev = "cfafeb4c093fa37a303f1b9f19c58f986b870ce3" }
+serde_json = "1"

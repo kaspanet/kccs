@@ -1,0 +1,143 @@
+{
+  "kcc": 23,
+  "format_version": 1,
+  "codec_prefix_hex": "00",
+  "byte_string_format": "All byte strings and hashes are lowercase hexadecimal without a 0x prefix; values are sompi.",
+  "scope": "Synthetic commitment fixtures with placeholder outpoints and scripts; no assertion of transaction acceptance or script validation.",
+  "hashing_reference": {
+    "repository": "kaspanet/rusty-kaspa",
+    "commit": "cfafeb4c093fa37a303f1b9f19c58f986b870ce3",
+    "paths": [
+      "consensus/core/src/hashing/tx.rs",
+      "consensus/core/src/hashing/covenant_id.rs",
+      "crypto/hashes/src/hashers.rs"
+    ]
+  },
+  "binding": {
+    "metadata_text": "{\"name\":\"Example Token\",\"symbol\":\"EXT\",\"decimals\":8}",
+    "preparation_transaction": {
+      "version": 1,
+      "inputs": [
+        {
+          "previous_outpoint": {
+            "transaction_id": "1111111111111111111111111111111111111111111111111111111111111111",
+            "index": 0
+          },
+          "signature_script_hex": "",
+          "sequence": 0,
+          "compute_budget": 0
+        }
+      ],
+      "outputs": [
+        {
+          "value": 100000000,
+          "script_public_key": {
+            "version": 0,
+            "script_hex": "51"
+          },
+          "covenant": null
+        }
+      ],
+      "lock_time": 0,
+      "subnetwork_id_hex": "0000000000000000000000000000000000000000",
+      "gas": 0,
+      "payload_hex": "007b226e616d65223a224578616d706c6520546f6b656e222c2273796d626f6c223a22455854222c22646563696d616c73223a387d",
+      "storage_mass": 0
+    },
+    "genesis_transaction": {
+      "version": 1,
+      "inputs": [
+        {
+          "previous_outpoint": {
+            "transaction_id": "206a0c31dbe45384b86de451a177fd7c8e986d278f2a86724d941937443113ef",
+            "index": 0
+          },
+          "signature_script_hex": "",
+          "sequence": 0,
+          "compute_budget": 0
+        }
+      ],
+      "outputs": [
+        {
+          "value": 90000000,
+          "script_public_key": {
+            "version": 0,
+            "script_hex": "51"
+          },
+          "covenant": {
+            "authorizing_input": 0,
+            "covenant_id": "c86366cec738e9a1578b2d871ee493dcaabfd79156810f13f3b62429859e394e"
+          }
+        }
+      ],
+      "lock_time": 0,
+      "subnetwork_id_hex": "0000000000000000000000000000000000000000",
+      "gas": 0,
+      "payload_hex": "",
+      "storage_mass": 0
+    },
+    "genesis_output_indices": [
+      0
+    ],
+    "expected": {
+      "payload_digest": "4c7a2edf5dfb9dfbc9e3750b13d533fb3125a093a5a864949ae53391825bf688",
+      "rest_preimage_hex": "0100010000000000000011111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000010000000000000000e1f505000000000000010000000000000051000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "rest_digest": "196a855c4194a345fae0186d835d6ac831fd6134c7c1a29b8c8b052251c81a07",
+      "preparation_transaction_id": "206a0c31dbe45384b86de451a177fd7c8e986d278f2a86724d941937443113ef",
+      "covenant_id": "c86366cec738e9a1578b2d871ee493dcaabfd79156810f13f3b62429859e394e"
+    },
+    "valid": true
+  },
+  "binding_mutations": [
+    {
+      "name": "changed_metadata",
+      "replace": {
+        "/preparation_transaction/payload_hex": "007b226e616d65223a224578616d706c6520546f6b656e222c2273796d626f6c223a22455854222c22646563696d616c73223a397d"
+      },
+      "expected_preparation_transaction_id": "6daf4b45cfd03b350c7da25ba9d11b7a2526151fdd86d810ebc75e251878e50f",
+      "valid": false,
+      "reason": "The recomputed preparation transaction ID does not match the outpoint spent at genesis."
+    },
+    {
+      "name": "version_0",
+      "replace": {
+        "/preparation_transaction/version": 0
+      },
+      "valid": false,
+      "reason": "The preparation transaction is not version 1."
+    }
+  ],
+  "mutation_rule": "Each mutation starts from binding and replaces the indicated fields. Paths are relative to binding; the genesis transaction and expected covenant ID remain unchanged.",
+  "declarations": [
+    {
+      "name": "empty_object",
+      "payload_hex": "007b7d",
+      "valid": true
+    },
+    {
+      "name": "utf8_string",
+      "payload_hex": "007b226e616d65223a22c3a9227d",
+      "valid": true
+    },
+    {
+      "name": "missing_codec_prefix",
+      "payload_hex": "7b7d",
+      "valid": false
+    },
+    {
+      "name": "unknown_codec",
+      "payload_hex": "017b7d",
+      "valid": false
+    },
+    {
+      "name": "non_object",
+      "payload_hex": "005b5d",
+      "valid": false
+    },
+    {
+      "name": "invalid_utf8",
+      "payload_hex": "007b2278223a22ff227d",
+      "valid": false
+    }
+  ]
+}
