@@ -1,0 +1,1219 @@
+{
+  "kcc": 1,
+  "format_version": 1,
+  "byte_string_format": {
+    "literal": "A hex field is a complete byte string encoded as lowercase hexadecimal.",
+    "repeated": "An object with repeat_hex and count repeats the one-byte repeat_hex value count times.",
+    "prefixed_payload": "An encoding with encoded_prefix_hex and payload set to unchanged concatenates that prefix with the vector's payload."
+  },
+  "vector_conventions": {
+    "integer_values": "value_decimal is an exact base-ten integer string, used instead of value for integers outside the interoperable JSON range -(2^53 - 1)..2^53 - 1. It is not a KCC-1 wire encoding.",
+    "records": "records lists named record definitions; fields are ordered. Record values use their declared field names, optionally suffixed with _hex for byte-string fields. A hexadecimal string denotes a byte or byte-string value when selected by its declared type.",
+    "rejections": "Every rejection_vectors entry has expected = reject. operation identifies the KCC-1 boundary being tested; reason explains the violated rule and is not a required implementation error message. These are ABI conformance expectations, not assertions that consensus alone rejects the bytes.",
+    "operations": {
+      "encode_scalar": "Encode the typed logical scalar value as a standalone argument.",
+      "decode_arguments": "Decode argument_hex as the complete canonical push sequence for argument_types, using records when present; no dispatch tag or redeem script is included.",
+      "decode_state": "Decode encoded_hex as the complete encoded state for the ordered fields.",
+      "validate_state_layout": "Check that the ordered fields and any referenced records use supported KCC-1 types.",
+      "validate_argument_type": "Check that type and any referenced records are permitted invocation argument types.",
+      "validate_entrypoints": "Check the entrypoints together as one program, using any supplied record definitions."
+    }
+  },
+  "hash_function": [
+    {
+      "id": "unkeyed-empty",
+      "input_hex": "",
+      "hash_hex": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262"
+    },
+    {
+      "id": "unkeyed-kcc-1",
+      "input_hex": "4b43432d31",
+      "hash_hex": "4573a3e94e92dee5d41e7ba2c77d6f70a54829760d21c11ca25705374aa7f777"
+    },
+    {
+      "id": "keyed-empty",
+      "input_hex": "",
+      "key_hex": "4b43432d31",
+      "key32_hex": "4b43432d31000000000000000000000000000000000000000000000000000000",
+      "hash_hex": "e98d9a91064b431e242efd29780956e5736812bdb4cd6f2a7e388e80bb61f3fb"
+    }
+  ],
+  "canonical_type_names": [
+    { "type": "integer", "type_name": "int" },
+    { "type": "boolean", "type_name": "bool" },
+    { "type": "byte", "type_name": "byte" },
+    { "type": "UTF-8 string", "type_name": "string" },
+    { "type": "32-byte public key", "type_name": "pubkey" },
+    { "type": "65-byte transaction signature", "type_name": "sig" },
+    { "type": "64-byte data signature", "type_name": "datasig" },
+    { "type": "fixed byte string of length 32", "type_name": "byte[32]" },
+    { "type": "fixed array of three booleans", "type_name": "bool[3]" },
+    { "type": "dynamic array of integers", "type_name": "int[]" },
+    { "type": "record named Transfer", "type_name": "Transfer" }
+  ],
+  "data_pushes": [
+    {
+      "id": "empty",
+      "payload": { "hex": "" },
+      "push_minimal": { "hex": "00" },
+      "push_explicit": { "hex": "00" }
+    },
+    {
+      "id": "op-1",
+      "payload": { "hex": "01" },
+      "push_minimal": { "hex": "51" },
+      "push_explicit": { "hex": "0101" }
+    },
+    {
+      "id": "op-16",
+      "payload": { "hex": "10" },
+      "push_minimal": { "hex": "60" },
+      "push_explicit": { "hex": "0110" }
+    },
+    {
+      "id": "op-1negate",
+      "payload": { "hex": "81" },
+      "push_minimal": { "hex": "4f" },
+      "push_explicit": { "hex": "0181" }
+    },
+    {
+      "id": "one-byte-data",
+      "payload": { "hex": "11" },
+      "push_minimal": { "hex": "0111" },
+      "push_explicit": { "hex": "0111" }
+    },
+    {
+      "id": "op-data-75",
+      "payload": { "repeat_hex": "ab", "count": 75 },
+      "push_minimal": { "encoded_prefix_hex": "4b", "payload": "unchanged" },
+      "push_explicit": { "encoded_prefix_hex": "4b", "payload": "unchanged" }
+    },
+    {
+      "id": "op-pushdata1-76",
+      "payload": { "repeat_hex": "ab", "count": 76 },
+      "push_minimal": { "encoded_prefix_hex": "4c4c", "payload": "unchanged" },
+      "push_explicit": { "encoded_prefix_hex": "4c4c", "payload": "unchanged" }
+    },
+    {
+      "id": "op-pushdata1-255",
+      "payload": { "repeat_hex": "ab", "count": 255 },
+      "push_minimal": { "encoded_prefix_hex": "4cff", "payload": "unchanged" },
+      "push_explicit": { "encoded_prefix_hex": "4cff", "payload": "unchanged" }
+    },
+    {
+      "id": "op-pushdata2-256",
+      "payload": { "repeat_hex": "ab", "count": 256 },
+      "push_minimal": { "encoded_prefix_hex": "4d0001", "payload": "unchanged" },
+      "push_explicit": { "encoded_prefix_hex": "4d0001", "payload": "unchanged" }
+    },
+    {
+      "id": "op-pushdata2-65535",
+      "payload": { "repeat_hex": "ab", "count": 65535 },
+      "push_minimal": { "encoded_prefix_hex": "4dffff", "payload": "unchanged" },
+      "push_explicit": { "encoded_prefix_hex": "4dffff", "payload": "unchanged" }
+    },
+    {
+      "id": "op-pushdata4-65536",
+      "payload": { "repeat_hex": "ab", "count": 65536 },
+      "push_minimal": { "encoded_prefix_hex": "4e00000100", "payload": "unchanged" },
+      "push_explicit": { "encoded_prefix_hex": "4e00000100", "payload": "unchanged" }
+    },
+    {
+      "id": "one-byte-zero",
+      "payload": {
+        "hex": "00"
+      },
+      "push_minimal": {
+        "hex": "0100"
+      },
+      "push_explicit": {
+        "hex": "0100"
+      }
+    },
+    {
+      "id": "one-byte-sign-bit",
+      "payload": {
+        "hex": "80"
+      },
+      "push_minimal": {
+        "hex": "0180"
+      },
+      "push_explicit": {
+        "hex": "0180"
+      }
+    }
+  ],
+  "scalar_encodings": [
+    {
+      "type": "int",
+      "value": 17,
+      "standalone_argument_hex": "0111",
+      "state_payload_hex": "1100000000000000"
+    },
+    {
+      "type": "int",
+      "value": -5,
+      "standalone_argument_hex": "0185",
+      "state_payload_hex": "0500000000000080"
+    },
+    {
+      "type": "bool",
+      "value": false,
+      "standalone_argument_hex": "00",
+      "state_payload_hex": "00"
+    },
+    {
+      "type": "bool",
+      "value": true,
+      "standalone_argument_hex": "51",
+      "state_payload_hex": "01"
+    },
+    {
+      "type": "byte",
+      "value_hex": "01",
+      "standalone_argument_hex": "51",
+      "state_payload_hex": "01"
+    },
+    {
+      "type": "string",
+      "value": "Kaspa",
+      "standalone_argument_hex": "054b61737061",
+      "state_payload_hex": "4b61737061"
+    },
+    {
+      "type": "int",
+      "value": 0,
+      "standalone_argument_hex": "00",
+      "state_payload_hex": "0000000000000000"
+    },
+    {
+      "type": "int",
+      "value": 1,
+      "standalone_argument_hex": "51",
+      "state_payload_hex": "0100000000000000"
+    },
+    {
+      "type": "int",
+      "value": -1,
+      "standalone_argument_hex": "4f",
+      "state_payload_hex": "0100000000000080"
+    },
+    {
+      "type": "int",
+      "value": 16,
+      "standalone_argument_hex": "60",
+      "state_payload_hex": "1000000000000000"
+    },
+    {
+      "type": "int",
+      "value": 127,
+      "standalone_argument_hex": "017f",
+      "state_payload_hex": "7f00000000000000"
+    },
+    {
+      "type": "int",
+      "value": -127,
+      "standalone_argument_hex": "01ff",
+      "state_payload_hex": "7f00000000000080"
+    },
+    {
+      "type": "int",
+      "value": 128,
+      "standalone_argument_hex": "028000",
+      "state_payload_hex": "8000000000000000"
+    },
+    {
+      "type": "int",
+      "value": -128,
+      "standalone_argument_hex": "028080",
+      "state_payload_hex": "8000000000000080"
+    },
+    {
+      "type": "int",
+      "value_decimal": "9223372036854775807",
+      "standalone_argument_hex": "08ffffffffffffff7f",
+      "state_payload_hex": "ffffffffffffff7f"
+    },
+    {
+      "type": "int",
+      "value_decimal": "-9223372036854775807",
+      "standalone_argument_hex": "08ffffffffffffffff",
+      "state_payload_hex": "ffffffffffffffff"
+    },
+    {
+      "type": "byte",
+      "value_hex": "00",
+      "standalone_argument_hex": "0100",
+      "state_payload_hex": "00"
+    },
+    {
+      "type": "byte",
+      "value_hex": "81",
+      "standalone_argument_hex": "4f",
+      "state_payload_hex": "81"
+    }
+  ],
+  "composite_encodings": [
+    {
+      "id": "fixed-bool-array",
+      "type": "bool[3]",
+      "value": [false, true, true],
+      "payload_hex": "000101",
+      "argument_hex": "03000101"
+    },
+    {
+      "id": "dynamic-bool-array",
+      "type": "bool[]",
+      "value": [false, true],
+      "payload_hex": "0001",
+      "argument_hex": "020001"
+    },
+    {
+      "id": "record",
+      "record": {
+        "name": "Pair",
+        "fields": [
+          { "name": "count", "type": "int" },
+          { "name": "enabled", "type": "bool" }
+        ]
+      },
+      "value": { "count": 17, "enabled": true },
+      "lowered_argument_hex": ["0111", "51"],
+      "combined_hex": "011151"
+    },
+    {
+      "id": "record-array",
+      "type": "Point[2]",
+      "record": {
+        "name": "Point",
+        "fields": [
+          { "name": "id", "type": "byte[2]" },
+          { "name": "enabled", "type": "bool" }
+        ]
+      },
+      "value": [
+        { "id_hex": "aabb", "enabled": true },
+        { "id_hex": "ccdd", "enabled": false }
+      ],
+      "grouped_argument_hex": ["04aabbccdd", "020100"],
+      "combined_hex": "04aabbccdd020100"
+    },
+    {
+      "id": "fixed-int-array",
+      "type": "int[3]",
+      "value": [
+        0,
+        128,
+        -128
+      ],
+      "payload_hex": "000000000000000080000000000000008000000000000080",
+      "argument_hex": "18000000000000000080000000000000008000000000000080"
+    },
+    {
+      "id": "dynamic-int-array",
+      "type": "int[]",
+      "value": [
+        0,
+        128,
+        -128
+      ],
+      "payload_hex": "000000000000000080000000000000008000000000000080",
+      "argument_hex": "18000000000000000080000000000000008000000000000080"
+    },
+    {
+      "id": "empty-byte-array",
+      "type": "byte[]",
+      "value_hex": "",
+      "payload_hex": "",
+      "argument_hex": "00"
+    },
+    {
+      "id": "nested-record",
+      "type": "Envelope",
+      "records": [
+        {
+          "name": "Pair",
+          "fields": [
+            {
+              "name": "count",
+              "type": "int"
+            },
+            {
+              "name": "enabled",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "Envelope",
+          "fields": [
+            {
+              "name": "pair",
+              "type": "Pair"
+            },
+            {
+              "name": "marker",
+              "type": "byte"
+            }
+          ]
+        }
+      ],
+      "value": {
+        "pair": {
+          "count": 128,
+          "enabled": false
+        },
+        "marker": "00"
+      },
+      "lowered_argument_hex": [
+        "028000",
+        "00",
+        "0100"
+      ],
+      "combined_hex": "028000000100"
+    },
+    {
+      "id": "dynamic-record-array",
+      "type": "Point[]",
+      "record": {
+        "name": "Point",
+        "fields": [
+          {
+            "name": "id",
+            "type": "byte[2]"
+          },
+          {
+            "name": "enabled",
+            "type": "bool"
+          }
+        ]
+      },
+      "value": [
+        {
+          "id_hex": "aabb",
+          "enabled": true
+        },
+        {
+          "id_hex": "ccdd",
+          "enabled": false
+        }
+      ],
+      "grouped_argument_hex": [
+        "04aabbccdd",
+        "020100"
+      ],
+      "combined_hex": "04aabbccdd020100"
+    }
+  ],
+  "dispatch_and_arguments": {
+    "entrypoint_name": "step",
+    "argument_types": ["int", "byte[4]", "bool", "byte"],
+    "function_signature_utf8_hex": "7374657028696e742c627974655b345d2c626f6f6c2c6279746529",
+    "dispatch_tag_hex": "2c49ed65",
+    "argument_values": [17, "01020304", true, "01"],
+    "argument_encodings_hex": ["0111", "0401020304", "51", "51"]
+  },
+  "zero_argument_dispatch": {
+    "entrypoint_name": "tick",
+    "argument_types": [],
+    "function_signature_utf8_hex": "7469636b2829",
+    "dispatch_tag_hex": "161bd7ee",
+    "push_arguments_hex": "",
+    "dispatch_tag_push_hex": "04161bd7ee"
+  },
+  "record_dispatch": [
+    {
+      "id": "dynamic-record-array",
+      "entrypoint_name": "dispense",
+      "argument_types": [
+        "CoffeeOrder[]"
+      ],
+      "records": [
+        {
+          "name": "CoffeeOrder",
+          "fields": [
+            {
+              "name": "recipe_code",
+              "type": "byte[4]"
+            },
+            {
+              "name": "sugar_level",
+              "type": "byte"
+            },
+            {
+              "name": "with_milk",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "dispatch_type_names": [
+        "{byte[4],byte,bool}[]"
+      ],
+      "function_signature_utf8_hex": "64697370656e7365287b627974655b345d2c627974652c626f6f6c7d5b5d29",
+      "dispatch_tag_hex": "676b1a86"
+    },
+    {
+      "id": "renamed-record-and-fields",
+      "entrypoint_name": "dispense",
+      "argument_types": [
+        "RenamedOrder[]"
+      ],
+      "records": [
+        {
+          "name": "RenamedOrder",
+          "fields": [
+            {
+              "name": "recipe",
+              "type": "byte[4]"
+            },
+            {
+              "name": "sugar",
+              "type": "byte"
+            },
+            {
+              "name": "milk",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "dispatch_type_names": [
+        "{byte[4],byte,bool}[]"
+      ],
+      "function_signature_utf8_hex": "64697370656e7365287b627974655b345d2c627974652c626f6f6c7d5b5d29",
+      "dispatch_tag_hex": "676b1a86"
+    },
+    {
+      "id": "reordered-record-fields",
+      "entrypoint_name": "dispense",
+      "argument_types": [
+        "CoffeeOrder[]"
+      ],
+      "records": [
+        {
+          "name": "CoffeeOrder",
+          "fields": [
+            {
+              "name": "with_milk",
+              "type": "bool"
+            },
+            {
+              "name": "sugar_level",
+              "type": "byte"
+            },
+            {
+              "name": "recipe_code",
+              "type": "byte[4]"
+            }
+          ]
+        }
+      ],
+      "dispatch_type_names": [
+        "{bool,byte,byte[4]}[]"
+      ],
+      "function_signature_utf8_hex": "64697370656e7365287b626f6f6c2c627974652c627974655b345d7d5b5d29",
+      "dispatch_tag_hex": "dafff68f"
+    },
+    {
+      "id": "fixed-record-array",
+      "entrypoint_name": "dispense",
+      "argument_types": [
+        "CoffeeOrder[2]"
+      ],
+      "records": [
+        {
+          "name": "CoffeeOrder",
+          "fields": [
+            {
+              "name": "recipe_code",
+              "type": "byte[4]"
+            },
+            {
+              "name": "sugar_level",
+              "type": "byte"
+            },
+            {
+              "name": "with_milk",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "dispatch_type_names": [
+        "{byte[4],byte,bool}[2]"
+      ],
+      "function_signature_utf8_hex": "64697370656e7365287b627974655b345d2c627974652c626f6f6c7d5b325d29",
+      "dispatch_tag_hex": "81764c55"
+    },
+    {
+      "id": "nested-record",
+      "entrypoint_name": "submit",
+      "argument_types": [
+        "Envelope"
+      ],
+      "records": [
+        {
+          "name": "Pair",
+          "fields": [
+            {
+              "name": "count",
+              "type": "int"
+            },
+            {
+              "name": "enabled",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "Envelope",
+          "fields": [
+            {
+              "name": "pair",
+              "type": "Pair"
+            },
+            {
+              "name": "marker",
+              "type": "byte"
+            }
+          ]
+        }
+      ],
+      "dispatch_type_names": [
+        "{{int,bool},byte}"
+      ],
+      "function_signature_utf8_hex": "7375626d6974287b7b696e742c626f6f6c7d2c627974657d29",
+      "dispatch_tag_hex": "3d042cd2"
+    },
+    {
+      "id": "nested-record-array",
+      "entrypoint_name": "submit",
+      "argument_types": [
+        "Envelope[]"
+      ],
+      "records": [
+        {
+          "name": "Pair",
+          "fields": [
+            {
+              "name": "count",
+              "type": "int"
+            },
+            {
+              "name": "enabled",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "Envelope",
+          "fields": [
+            {
+              "name": "pair",
+              "type": "Pair"
+            },
+            {
+              "name": "marker",
+              "type": "byte"
+            }
+          ]
+        }
+      ],
+      "dispatch_type_names": [
+        "{{int,bool},byte}[]"
+      ],
+      "function_signature_utf8_hex": "7375626d6974287b7b696e742c626f6f6c7d2c627974657d5b5d29",
+      "dispatch_tag_hex": "a625f54c"
+    }
+  ],
+  "p2sh_envelope": {
+    "redeem_script_hex": "51",
+    "blake2b_256_hex": "ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d",
+    "script_public_key": {
+      "version": 0,
+      "script_hex": "aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87"
+    },
+    "signature_script_hex": "011104010203045151042c49ed650151"
+  },
+  "state_encoding": {
+    "fields": [
+      {
+        "name": "key",
+        "type": "pubkey",
+        "value_hex": "0707070707070707070707070707070707070707070707070707070707070707",
+        "encoded_hex": "200707070707070707070707070707070707070707070707070707070707070707"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "value": "Kaspa",
+        "encoded_hex": "054b61737061"
+      },
+      {
+        "name": "counter",
+        "type": "int",
+        "value": -5,
+        "encoded_hex": "080500000000000080"
+      },
+      {
+        "name": "enabled",
+        "type": "bool",
+        "value": true,
+        "encoded_hex": "0101"
+      }
+    ],
+    "encoded_length": 50,
+    "encoded_hex": "200707070707070707070707070707070707070707070707070707070707070707054b617370610805000000000000800101"
+  },
+  "template_hashes": [
+    {
+      "prefix_hex": "",
+      "suffix_hex": "",
+      "hash_hex": "e572dff82304700b856a555ac3a4558d0df3646a3727816500270a93c66aac1e"
+    },
+    {
+      "prefix_hex": "61",
+      "suffix_hex": "6263",
+      "hash_hex": "405e183e2494cdbe2df89349cc0ffa5b77fb885ad97a1d5660ecd0692ef8142a"
+    },
+    {
+      "prefix_hex": "6162",
+      "suffix_hex": "63",
+      "hash_hex": "a0968c014f3fc7bd1a7d9a8d1ad1177eb379bd2f05e56309eb4e20347c5e7eba"
+    },
+    {
+      "prefix_hex": "00ff",
+      "suffix_hex": "100080",
+      "hash_hex": "6616a66757315de0221cb2acba729113cebde31f8d3ca7fa93878a0584b96905"
+    }
+  ],
+  "template_views": {
+    "program_hex": "5102aabb010102ccdd75",
+    "state_start": 1,
+    "state_len": 8,
+    "fields": [
+      { "name": "a", "type": "byte[2]", "encoded_hex": "02aabb" },
+      { "name": "b", "type": "bool", "encoded_hex": "0101" },
+      { "name": "c", "type": "byte[2]", "encoded_hex": "02ccdd" }
+    ],
+    "views": [
+      {
+        "fields": ["a", "b"],
+        "start": 1,
+        "len": 5,
+        "prefix_hex": "51",
+        "encoded_state_hex": "02aabb0101",
+        "suffix_hex": "02ccdd75",
+        "template_hash_hex": "2e2c28131760a1c0942842f8b54fe686321d0080f5161fa803e27af6a15799a4"
+      },
+      {
+        "fields": ["b", "c"],
+        "start": 4,
+        "len": 5,
+        "prefix_hex": "5102aabb",
+        "encoded_state_hex": "010102ccdd",
+        "suffix_hex": "75",
+        "template_hash_hex": "0eb10580bcb608ab9efab6e256d4bac6671d724a72951a058d37b42fa205c1ee"
+      },
+      {
+        "fields": ["b"],
+        "start": 4,
+        "len": 2,
+        "prefix_hex": "5102aabb",
+        "encoded_state_hex": "0101",
+        "suffix_hex": "02ccdd75",
+        "template_hash_hex": "7b96ebb8023373bfe7aa81f7db8e0e0d9ce492d2b0382fb5586ac60beea8ed12"
+      }
+    ]
+  },
+  "continuation_program": {
+    "view_fields": ["b"],
+    "prefix_hex": "5102aabb",
+    "next_state": { "b": false },
+    "encoded_next_state_hex": "0100",
+    "suffix_hex": "02ccdd75",
+    "redeem_script_hex": "5102aabb010002ccdd75",
+    "blake2b_256_hex": "964c61dd43eec7b7565229a15df15e1d8e9afbbedcc019eaa1eda7b86d9831ac",
+    "script_public_key": {
+      "version": 0,
+      "script_hex": "aa20964c61dd43eec7b7565229a15df15e1d8e9afbbedcc019eaa1eda7b86d9831ac87"
+    }
+  },
+  "rejection_vectors": [
+    {
+      "id": "int-above-maximum",
+      "operation": "encode_scalar",
+      "type": "int",
+      "value_decimal": "9223372036854775808",
+      "expected": "reject",
+      "rule": "3.4.3",
+      "reason": "The value is outside the signed-magnitude int range."
+    },
+    {
+      "id": "int-below-minimum",
+      "operation": "encode_scalar",
+      "type": "int",
+      "value_decimal": "-9223372036854775808",
+      "expected": "reject",
+      "rule": "3.4.3",
+      "reason": "The value is outside the signed-magnitude int range."
+    },
+    {
+      "id": "argument-int-redundant-sign-byte",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "int"
+      ],
+      "argument_hex": "020100",
+      "expected": "reject",
+      "rule": "3.4.3",
+      "reason": "A standalone int must use minimal ScriptNum."
+    },
+    {
+      "id": "argument-int-negative-zero",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "int"
+      ],
+      "argument_hex": "0180",
+      "expected": "reject",
+      "rule": "3.4.3",
+      "reason": "Negative zero is not a minimal ScriptNum."
+    },
+    {
+      "id": "argument-int-nonminimal-push",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "int"
+      ],
+      "argument_hex": "0101",
+      "expected": "reject",
+      "rule": "3.4.2",
+      "reason": "The payload 01 must use OP_1 in PushMinimal."
+    },
+    {
+      "id": "argument-byte-empty",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "byte"
+      ],
+      "argument_hex": "00",
+      "expected": "reject",
+      "rule": "3.4.4",
+      "reason": "A byte requires exactly one payload byte; OP_0 pushes an empty payload."
+    },
+    {
+      "id": "argument-bool-two",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "bool"
+      ],
+      "argument_hex": "52",
+      "expected": "reject",
+      "rule": "3.4.4",
+      "reason": "A standalone bool must use OP_0 or OP_1."
+    },
+    {
+      "id": "argument-bool-explicit-false",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "bool"
+      ],
+      "argument_hex": "0100",
+      "expected": "reject",
+      "rule": "3.4.4",
+      "reason": "Standalone false must use OP_0."
+    },
+    {
+      "id": "argument-fixed-bytes-short",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "byte[2]"
+      ],
+      "argument_hex": "01aa",
+      "expected": "reject",
+      "rule": "3.4.4",
+      "reason": "A fixed byte string must have exactly its declared length."
+    },
+    {
+      "id": "argument-int-array-partial-element",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "int[]"
+      ],
+      "argument_hex": "0100",
+      "expected": "reject",
+      "rule": "3.4.5",
+      "reason": "The payload length is not a multiple of the eight-byte element width."
+    },
+    {
+      "id": "argument-fixed-array-wrong-count",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "bool[3]"
+      ],
+      "argument_hex": "020001",
+      "expected": "reject",
+      "rule": "3.4.5",
+      "reason": "The payload contains two elements instead of three."
+    },
+    {
+      "id": "argument-bool-array-invalid-element",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "bool[]"
+      ],
+      "argument_hex": "020002",
+      "expected": "reject",
+      "rule": "3.4.4",
+      "reason": "Boolean array elements must be 00 or 01."
+    },
+    {
+      "id": "argument-record-array-unequal-groups",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "Point[]"
+      ],
+      "argument_hex": "04aabbccdd51",
+      "records": [
+        {
+          "name": "Point",
+          "fields": [
+            {
+              "name": "id",
+              "type": "byte[2]"
+            },
+            {
+              "name": "enabled",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "expected": "reject",
+      "rule": "3.4.6",
+      "reason": "The id group contains two records but the enabled group contains one."
+    },
+    {
+      "id": "argument-record-array-wrong-fixed-count",
+      "operation": "decode_arguments",
+      "argument_types": [
+        "Point[2]"
+      ],
+      "argument_hex": "02aabb51",
+      "records": [
+        {
+          "name": "Point",
+          "fields": [
+            {
+              "name": "id",
+              "type": "byte[2]"
+            },
+            {
+              "name": "enabled",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "expected": "reject",
+      "rule": "3.4.6",
+      "reason": "Both field groups contain one record instead of two."
+    },
+    {
+      "id": "state-bool-small-integer-opcode",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "encoded_hex": "51",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "State requires PushExplicit, so true must be encoded as 0101."
+    },
+    {
+      "id": "state-bool-nonminimal-length-prefix",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "encoded_hex": "4c0101",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "The length prefix must be the canonical PushExplicit form."
+    },
+    {
+      "id": "state-bool-empty-payload",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "encoded_hex": "00",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "A state bool requires exactly one payload byte."
+    },
+    {
+      "id": "state-bool-invalid-payload",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "encoded_hex": "0102",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "A state bool payload must be 00 or 01."
+    },
+    {
+      "id": "state-int-minimal-width",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "int"
+        }
+      ],
+      "encoded_hex": "0185",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "A state int payload must have exactly eight bytes."
+    },
+    {
+      "id": "state-int-negative-zero",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "int"
+        }
+      ],
+      "encoded_hex": "080000000000000080",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "Re-encoding decoded zero produces an all-zero payload, not negative zero."
+    },
+    {
+      "id": "state-missing-field",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "encoded_hex": "",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "The declared field is missing."
+    },
+    {
+      "id": "state-trailing-bytes",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "encoded_hex": "010100",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "The decoder must consume the complete state without trailing bytes."
+    },
+    {
+      "id": "state-truncated-payload",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "byte[2]"
+        }
+      ],
+      "encoded_hex": "02aa",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "The data push is truncated."
+    },
+    {
+      "id": "state-truncated-length",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "byte[2]"
+        }
+      ],
+      "encoded_hex": "4d02",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "The OP_PUSHDATA2 length is truncated."
+    },
+    {
+      "id": "state-non-push-opcode",
+      "operation": "decode_state",
+      "fields": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "encoded_hex": "76",
+      "expected": "reject",
+      "rule": "3.7.1",
+      "reason": "Each state field must be encoded as one data push."
+    },
+    {
+      "id": "dynamic-array-zero-width-element",
+      "operation": "validate_argument_type",
+      "type": "byte[0][]",
+      "expected": "reject",
+      "rule": "3.4.5",
+      "reason": "Array elements or recursively lowered record leaves must have positive fixed payload widths."
+    },
+    {
+      "id": "record-array-variable-width-leaf",
+      "operation": "validate_argument_type",
+      "type": "Variable[]",
+      "records": [
+        {
+          "name": "Variable",
+          "fields": [
+            {
+              "name": "label",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "expected": "reject",
+      "rule": "3.4.6",
+      "reason": "Array elements or recursively lowered record leaves must have positive fixed payload widths."
+    },
+    {
+      "id": "record-array-zero-width-leaf",
+      "operation": "validate_argument_type",
+      "type": "Empty[]",
+      "records": [
+        {
+          "name": "Empty",
+          "fields": [
+            {
+              "name": "data",
+              "type": "byte[0]"
+            }
+          ]
+        }
+      ],
+      "expected": "reject",
+      "rule": "3.4.6",
+      "reason": "Array elements or recursively lowered record leaves must have positive fixed payload widths."
+    },
+    {
+      "id": "identical-structural-signatures",
+      "operation": "validate_entrypoints",
+      "records": [
+        {
+          "name": "CoffeeOrder",
+          "fields": [
+            {
+              "name": "recipe_code",
+              "type": "byte[4]"
+            },
+            {
+              "name": "sugar_level",
+              "type": "byte"
+            },
+            {
+              "name": "with_milk",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "RenamedOrder",
+          "fields": [
+            {
+              "name": "recipe",
+              "type": "byte[4]"
+            },
+            {
+              "name": "sugar",
+              "type": "byte"
+            },
+            {
+              "name": "milk",
+              "type": "bool"
+            }
+          ]
+        }
+      ],
+      "entrypoints": [
+        {
+          "name": "dispense",
+          "argument_types": [
+            "CoffeeOrder[]"
+          ]
+        },
+        {
+          "name": "dispense",
+          "argument_types": [
+            "RenamedOrder[]"
+          ]
+        }
+      ],
+      "function_signatures": [
+        "dispense({byte[4],byte,bool}[])",
+        "dispense({byte[4],byte,bool}[])"
+      ],
+      "dispatch_tag_hex": "676b1a86",
+      "expected": "reject",
+      "rule": "3.5.1",
+      "reason": "Record and field renaming cannot distinguish two otherwise identical dispatch signatures."
+    },
+    {
+      "id": "truncated-hash-collision",
+      "operation": "validate_entrypoints",
+      "entrypoints": [
+        {
+          "name": "collision53249",
+          "argument_types": []
+        },
+        {
+          "name": "collision121636",
+          "argument_types": []
+        }
+      ],
+      "function_signatures": [
+        "collision53249()",
+        "collision121636()"
+      ],
+      "dispatch_tag_hex": "33b057f4",
+      "expected": "reject",
+      "rule": "3.5.1",
+      "reason": "Distinct signature preimages produce the same four-byte dispatch tag."
+    }
+  ],
+  "hash_committed_virtual_element": {
+    "record": {
+      "fields": [
+        { "type": "int", "value": -5 },
+        { "type": "bool", "value": true }
+      ]
+    },
+    "packed_hex": "050000000000008001",
+    "commitment_hex": "15e006c7c506fb20b6de9573e31bdc47591e937c38f9fcf31cdfabe55d122bda"
+  }
+}
