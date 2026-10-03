@@ -77,7 +77,7 @@
       "code": -32003,
       "name": "Transaction rejected",
       "message": "Transaction rejected",
-      "meaning": ""
+      "meaning": "The remote rejected the transaction; data.reason classifies the rejection (Section 8)."
     },
     {
       "code": -32004,
@@ -126,6 +126,32 @@
     {
       "condition": "kaspa_signTransaction input script type the wallet cannot sign",
       "code": -32000
+    },
+    {
+      "condition": "kaspa_sendTransaction submitted the transaction but did not learn the outcome; data.submitted holds its identifier",
+      "code": "4900 when disconnected, -32603 otherwise"
+    },
+    {
+      "condition": "kaspa_signInputs with an address that is not an authorized account",
+      "code": 4100
+    },
+    {
+      "condition": "kaspa_sendRawPskb input with several partialSigs entries and a key that does not occur in its redeem script",
+      "code": -32000
     }
-  ]
+  ],
+  "reasons": {
+    "description": "Values of data.reason with code -32003 (Section 8). Unassigned values are reserved.",
+    "values": [
+      "missing-outpoint",
+      "orphan",
+      "double-spend",
+      "duplicate",
+      "insufficient-fee",
+      "mempool-full",
+      "mass",
+      "non-standard",
+      "invalid"
+    ]
+  }
 }

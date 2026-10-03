@@ -126,6 +126,25 @@ const txid = await provider.request({
 });
 ```
 
+When the covenant itself requires the owner's transaction signature, as the
+key-based owner schemes of KCC-20 do, the wallet cannot write the input's
+script and the app cannot make the signature. `kaspa_signInputs` returns the
+bare signature; the app places it and then has the wallet sign its fee
+input as above.
+
+```typescript
+// tx: input 0 spends a token UTXO whose covenant checks the owner's
+// signature; input 1 pays the fee from the user's account.
+const [ownerSig] = await provider.request({
+  method: "kaspa_signInputs",
+  params: [{ transaction: tx.serializeToSafeJSON(), signInputs: [{ index: 0, address: ownerAddress, sighashType: 1 }] }],
+});
+// Compose input 0's signature script as the covenant defines it, appending
+// the sighash type byte "01" to ownerSig where the covenant expects a
+// 65-byte transaction signature, then continue with kaspa_signTransaction
+// for input 1 and kaspa_sendRawTransaction.
+```
+
 ## 6. App side: co-signing a bundle (multi-signature)
 
 For flows that gather signatures from several parties, the app exchanges a
@@ -212,6 +231,14 @@ every request to that origin.
 
 A transport relays opaque messages, so it is written untyped inside and
 exposed through the typed interface at the boundary.
+
+The transport gives the app no protection from scripts in its own page. Any
+page script can read a request's `id` from the `message` event and post a
+matching response before the extension does, just as it can wrap or replace
+the provider object itself (KCC-12, Security Considerations). Responses are
+matched to their request by `id`, never to the oldest pending request, so an
+unrelated reply cannot settle a pending send; but the page remains untrusted,
+and the wallet's own interface is the only place a request is confirmed.
 
 ```typescript
 // inpage.ts (runs in the page's JavaScript realm)

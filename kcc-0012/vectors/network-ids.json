@@ -84,6 +84,18 @@
     {
       "id": "",
       "reason": "empty"
+    },
+    {
+      "id": "mainnet-1",
+      "reason": "suffix on a network type other than testnet"
+    },
+    {
+      "id": "devnet-1",
+      "reason": "suffix on a network type other than testnet"
+    },
+    {
+      "id": "simnet-1",
+      "reason": "suffix on a network type other than testnet"
     }
   ]
 }

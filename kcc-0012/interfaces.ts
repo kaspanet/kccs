@@ -8,11 +8,10 @@ export const KASPA_NETWORKS = {
   SIMNET: "simnet",
 } as const;
 
-export const NETWORK_ID_PATTERN = /^(mainnet|testnet|devnet|simnet)(-[1-9][0-9]*)?$/;
+export const NETWORK_ID_PATTERN = /^(mainnet|devnet|simnet|testnet-[1-9][0-9]*)$/;
 
 export function isNetworkId(value: string): boolean {
-  if (!NETWORK_ID_PATTERN.test(value)) return false;
-  return !(value === "testnet");
+  return NETWORK_ID_PATTERN.test(value);
 }
 
 /** hexadecimal */
@@ -92,13 +91,40 @@ export type RequestArguments<M extends KaspaRpcMethod = KaspaRpcMethod> =
     ? { readonly method: M; readonly params?: KaspaRpcSchema[M]["params"] }
     : { readonly method: M; readonly params: KaspaRpcSchema[M]["params"] };
 
+/** Classes of remote rejection carried in data.reason with code -32003 (Section 8). */
+export type RejectionReason =
+  | "missing-outpoint"
+  | "orphan"
+  | "double-spend"
+  | "duplicate"
+  | "insufficient-fee"
+  | "mempool-full"
+  | "mass"
+  | "non-standard"
+  | "invalid";
+
+export const REJECTION_REASONS = [
+  "missing-outpoint",
+  "orphan",
+  "double-spend",
+  "duplicate",
+  "insufficient-fee",
+  "mempool-full",
+  "mass",
+  "non-standard",
+  "invalid",
+] as const satisfies readonly RejectionReason[];
+
 /**
- * Additional information on an error. `submitted` and `pskb` are set by the
- * bundle-submission methods; a wallet MAY add members of its own.
+ * Additional information on an error. `submitted` is set by
+ * kaspa_sendTransaction and the bundle-submission methods, `pskb` by
+ * kaspa_sendPskb, and `reason` with code -32003; a wallet MAY add members
+ * of its own.
  */
 export interface ProviderErrorData {
   readonly submitted?: readonly TransactionId[];
   readonly pskb?: Pskb;
+  readonly reason?: RejectionReason;
   readonly [key: string]: unknown;
 }
 
@@ -172,7 +198,7 @@ declare global {
   }
 }
 
-/** Caveat types and their value types, keyed by type name (Section 6.12). */
+/** Caveat types and their value types, keyed by type name (Section 6.13). */
 export interface CaveatTypes {
   restrictReturnedAccounts: Address[];
 }
@@ -211,6 +237,19 @@ export interface SignTransactionParams {
   signInputs: SignInput[];
 }
 
+/** One input of kaspa_signInputs: the account that signs is named explicitly. */
+export interface SignInputsInput {
+  index: number;
+  address: Address;
+  sighashType?: SighashType;
+  signatureType?: SignatureType;
+}
+
+export interface SignInputsParams {
+  transaction: SerializedTransaction;
+  signInputs: SignInputsInput[];
+}
+
 export interface SwitchNetworkParams {
   networkId: NetworkId;
 }
@@ -223,6 +262,7 @@ export interface KaspaRpcSchema {
   kaspa_signMessage: { params: [message: string, address: Address]; result: Hex };
   kaspa_sendTransaction: { params: [SendTransactionParams]; result: TransactionId };
   kaspa_signTransaction: { params: [SignTransactionParams]; result: SerializedTransaction };
+  kaspa_signInputs: { params: [SignInputsParams]; result: Hex[] };
   kaspa_sendRawTransaction: { params: [transaction: SerializedTransaction]; result: TransactionId };
   kaspa_signPskb: { params: [pskb: Pskb]; result: Pskb };
   kaspa_sendRawPskb: { params: [pskb: Pskb]; result: TransactionId[] };
