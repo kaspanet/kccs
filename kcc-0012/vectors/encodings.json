@@ -1,0 +1,47 @@
+{
+  "kcc": 12,
+  "section": "7.1 Hexadecimal, 7.2 Unsigned decimal strings and amounts",
+  "description": "Hex: canonical strings MUST be produced and accepted; nonCanonical strings SHOULD be accepted from a peer and MUST NOT be produced; invalid strings MUST be rejected. Uint64 (and Amount, which is a Uint64): valid strings MUST be accepted; invalid strings MUST be rejected.",
+  "hex": {
+    "canonical": [
+      "",
+      "00",
+      "deadbeef",
+      "0151"
+    ],
+    "nonCanonical": [
+      "DEADBEEF",
+      "DeadBeef"
+    ],
+    "invalid": [
+      "0xdeadbeef",
+      "abc",
+      "zz",
+      "de ad",
+      " 00"
+    ]
+  },
+  "uint64": {
+    "valid": [
+      "0",
+      "1",
+      "100000000",
+      "18446744073709551615"
+    ],
+    "invalid": [
+      "",
+      "01",
+      "-1",
+      "+1",
+      "1.5",
+      "1e8",
+      "1_000",
+      "100 000",
+      "0x10",
+      " 1",
+      "1 ",
+      "18446744073709551616",
+      "1.0"
+    ]
+  }
+}
