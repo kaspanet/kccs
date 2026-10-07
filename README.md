@@ -10,7 +10,7 @@ The KCC format, lifecycle, and finalization criteria are defined in [KCC-0](kcc-
 
 | Number | Type / Category | Title | Author | Status |
 |--------|-----------------|-------|--------|--------|
-| [0](kcc-0000.md) | Meta | KCC Purpose and Guidelines | Alexander Säfström | Draft |
-| [1](kcc-0001.md) | Standard, Concepts, Covenant | Covenant definition, concepts, bytes layout and ABI | Romain Billot, Michael Sutton, Ori Newman | Draft |
-| [2](kcc-0002.md) | Standards Track, ABI | Authority Schemes | Romain Billot, Michael Sutton | Draft |
+| [0](kcc-0000.md) | Meta | KCC Purpose and Guidelines | Alexander Säfström | Final |
+| [1](kcc-0001.md) | Standards Track, Covenant | Covenant Concepts, Byte Layouts, and ABI | Romain Billot, Michael Sutton, Ori Newman | Last Call |
+| [2](kcc-0002.md) | Standards Track, ABI | Authority Schemes | Romain Billot, Michael Sutton | Last Call |
 | [20](kcc-0020.md) | Standards Track, Application | Fungible Token Covenant Specification | Sivan Helfer, Michael Sutton, Ori Newman, Romain Billot | Last Call |
