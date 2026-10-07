@@ -206,7 +206,7 @@
       "owner_scheme_hex": "01",
       "extension_commitment_hex": "0000000000000000000000000000000000000000000000000000000000000000"
     },
-    "note": "The successor preserves every field not listed; successor_owner_hex, leader_kas_value_sompi and successor_kas_value_sompi override or add to it where present. Signature checks are stipulated to succeed; signature_dependent marks cases whose outcome depends on a signature verifying.",
+    "note": "The successor preserves every field not listed; successor_owner_hex, leader_kas_value_sompi and successor_kas_value_sompi override or add to it where present. Cases with negative threshold payloads apply only to contracts that permit those payloads. Signature checks are stipulated to succeed; signature_dependent marks cases whose outcome depends on a signature verifying.",
     "cases": [
       {
         "id": "threshold-exceeded",
@@ -229,6 +229,83 @@
         "signature_dependent": false,
         "result": "reject",
         "reason": "amount increase does not strictly exceed the threshold"
+      },
+      {
+        "id": "threshold-zero",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "successor_amount": 1001,
+        "successor_borrow_guard_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "accept",
+        "reason": ""
+      },
+      {
+        "id": "threshold-negative",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "f401000000000080000000000000000000000000000000000000000000000000",
+        "successor_amount": 1001,
+        "successor_borrow_guard_hex": "f401000000000080000000000000000000000000000000000000000000000000",
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "accept",
+        "reason": ""
+      },
+      {
+        "id": "threshold-negative-unchanged",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "f401000000000080000000000000000000000000000000000000000000000000",
+        "successor_amount": 1000,
+        "successor_borrow_guard_hex": "f401000000000080000000000000000000000000000000000000000000000000",
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "amount increase does not strictly exceed the effective threshold of zero"
+      },
+      {
+        "id": "threshold-negative-decrease",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "f401000000000080000000000000000000000000000000000000000000000000",
+        "successor_amount": 999,
+        "successor_borrow_guard_hex": "f401000000000080000000000000000000000000000000000000000000000000",
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "borrowed successor amount is smaller than the leader's amount"
+      },
+      {
+        "id": "threshold-negative-zero",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "0000000000000080000000000000000000000000000000000000000000000000",
+        "successor_amount": 1001,
+        "successor_borrow_guard_hex": "0000000000000080000000000000000000000000000000000000000000000000",
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "accept",
+        "reason": ""
+      },
+      {
+        "id": "threshold-negative-zero-unchanged",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "0000000000000080000000000000000000000000000000000000000000000000",
+        "successor_amount": 1000,
+        "successor_borrow_guard_hex": "0000000000000080000000000000000000000000000000000000000000000000",
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "amount increase does not strictly exceed the effective threshold of zero"
+      },
+      {
+        "id": "threshold-guard-normalized",
+        "borrow_scheme_hex": "01",
+        "leader_borrow_guard_hex": "f401000000000080000000000000000000000000000000000000000000000000",
+        "successor_amount": 1001,
+        "successor_borrow_guard_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "witness_hex": "01",
+        "signature_dependent": false,
+        "result": "reject",
+        "reason": "borrowed successor does not preserve the complete borrow_guard"
       },
       {
         "id": "disabled",

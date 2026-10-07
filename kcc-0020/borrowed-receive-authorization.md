@@ -38,7 +38,7 @@ Some schemes require a scheme-specific `borrow_witness`.
 | Scheme | Control model | `borrow_guard` | `borrow_witness` |
 | --- | --- | --- | --- |
 | `disabled/v1` | No borrowing | Unused | Borrowing is rejected |
-| `amount-threshold/v1` | Any sender above threshold | Threshold in first eight bytes | Empty |
+| `amount-threshold/v1` | Any sender above effective threshold | Signed threshold in first eight bytes; negative values behave as zero | Empty |
 | `schnorr-signature/v1` | Approved borrower, reusable | Dedicated 32-byte public key | 65-byte Schnorr transaction signature |
 | `hash-chain/v1` | Approved borrow, single-use | Current 32-byte hash-chain commitment | 32-byte preimage, 32-byte one-time public key, and 65-byte signature |
 
@@ -52,9 +52,14 @@ The `disabled/v1` scheme rejects borrowed receives.
 ### `amount-threshold/v1`
 
 The `amount-threshold/v1` scheme allows any sender to borrow when the token
-increase exceeds the threshold stored in `borrow_guard`. A positive threshold
-mitigates dust-based outpoint churn; a zero threshold allows any positive
-increase. No `borrow_witness` is required.
+increase exceeds the effective threshold, `max(decoded_threshold, 0)`. The
+first eight bytes of `borrow_guard` encode a little-endian signed-magnitude
+integer; the remaining bytes do not affect the threshold. A positive threshold
+mitigates dust-based outpoint churn; a zero effective threshold allows any
+positive increase. Negative zero behaves as zero. No `borrow_witness` is
+required, and the complete guard is preserved.
+
+Contracts may require thresholds to be non-negative.
 
 ### `schnorr-signature/v1`
 
