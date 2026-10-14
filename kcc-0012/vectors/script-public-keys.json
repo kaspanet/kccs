@@ -1,0 +1,43 @@
+{
+  "kcc": 12,
+  "section": "7.4 Script public keys, 7.7 Signature scripts",
+  "description": "Script public key encodings for each address version, as they appear in SerializedTransaction JSON: four hex characters of big-endian script version 0 followed by the script.",
+  "vectors": [
+    {
+      "addressVersion": 0,
+      "scriptType": "P2PK",
+      "publicKey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "script": "20f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac",
+      "scriptPublicKey": "000020f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac",
+      "defaultSignatureType": "schnorr"
+    },
+    {
+      "addressVersion": 1,
+      "scriptType": "P2PK ECDSA",
+      "publicKey": "03cbaedc26f03fd3ba02fc936f338e980c9e2172c5e23128877ed46827e935296f",
+      "script": "2103cbaedc26f03fd3ba02fc936f338e980c9e2172c5e23128877ed46827e935296fab",
+      "scriptPublicKey": "00002103cbaedc26f03fd3ba02fc936f338e980c9e2172c5e23128877ed46827e935296fab",
+      "defaultSignatureType": "ecdsa"
+    },
+    {
+      "addressVersion": 8,
+      "scriptType": "P2SH",
+      "redeemScript": "51",
+      "redeemScriptHash": "ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d",
+      "script": "aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87",
+      "scriptPublicKey": "0000aa20ce57216285125006ec18197bd8184221cefa559bb0798410d99a5bba5b07cd1d87",
+      "defaultSignatureType": "schnorr",
+      "note": "Reuses the KCC-1 Section 11.2 P2SH envelope vector. redeemScriptHash = BLAKE2b-256(redeemScript), unkeyed."
+    },
+    {
+      "addressVersion": 8,
+      "scriptType": "P2SH",
+      "redeemScript": "20f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac0063076b6173706c6578287b2270223a226b72632d3230222c226f70223a226d696e74222c227469636b223a224b415350412268",
+      "redeemScriptHash": "c306424390e191c6dae3128c122b96d4c7083189273cc31299c1fd2f323f4030",
+      "script": "aa20c306424390e191c6dae3128c122b96d4c7083189273cc31299c1fd2f323f403087",
+      "scriptPublicKey": "0000aa20c306424390e191c6dae3128c122b96d4c7083189273cc31299c1fd2f323f403087",
+      "defaultSignatureType": "schnorr",
+      "note": "86-byte redeem script, exercising the OP_PUSHDATA1 form of the signature-script redeem push. redeemScriptHash = BLAKE2b-256(redeemScript), unkeyed."
+    }
+  ]
+}
