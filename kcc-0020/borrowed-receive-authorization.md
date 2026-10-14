@@ -1,7 +1,7 @@
-# KCC20 Borrowed Receive Authorization
+# KCC-20 Borrowed Receive Authorization
 
 Borrowed Receive is defined in
-[KCC20 Section 5](../kcc-0020.md#5-borrowed-receive).
+[KCC-20 Section 5](../kcc-0020.md#5-borrowed-receive).
 
 ## Motivation
 
@@ -12,7 +12,7 @@ For token transfers, this means the sender normally funds each new recipient
 token UTXO with enough KAS, or the recipient co-signs and supplies an existing
 UTXO.
 
-Borrowed Receive allows the sender to use an existing recipient KCC20 UTXO as
+Borrowed Receive allows the sender to use an existing recipient KCC-20 UTXO as
 the receive target. Instead of creating a new recipient token UTXO, the sender
 consumes the existing UTXO and recreates it in place with a larger token amount.
 The recipient's normal owner authorization is not used, the KAS value cannot
@@ -29,7 +29,7 @@ one.
 
 ## Borrow authorization
 
-Each KCC20 state contains a `borrow_scheme` and a 32-byte `borrow_guard`.
+Each KCC-20 state contains a `borrow_scheme` and a 32-byte `borrow_guard`.
 `borrow_scheme` selects the authorization rule, while `borrow_guard` holds its
 parameter or evolving state.
 
@@ -38,7 +38,7 @@ Some schemes require a scheme-specific `borrow_witness`.
 | Scheme | Control model | `borrow_guard` | `borrow_witness` |
 | --- | --- | --- | --- |
 | `disabled/v1` | No borrowing | Unused | Borrowing is rejected |
-| `amount-threshold/v1` | Any sender above threshold | Threshold in first eight bytes | Empty |
+| `amount-threshold/v1` | Any sender above effective threshold | Signed threshold in first eight bytes; negative values behave as zero | Empty |
 | `schnorr-signature/v1` | Approved borrower, reusable | Dedicated 32-byte public key | 65-byte Schnorr transaction signature |
 | `hash-chain/v1` | Approved borrow, single-use | Current 32-byte hash-chain commitment | 32-byte preimage, 32-byte one-time public key, and 65-byte signature |
 
@@ -52,9 +52,14 @@ The `disabled/v1` scheme rejects borrowed receives.
 ### `amount-threshold/v1`
 
 The `amount-threshold/v1` scheme allows any sender to borrow when the token
-increase exceeds the threshold stored in `borrow_guard`. A positive threshold
-mitigates dust-based outpoint churn; a zero threshold allows any positive
-increase. No `borrow_witness` is required.
+increase exceeds the effective threshold, `max(decoded_threshold, 0)`. The
+first eight bytes of `borrow_guard` encode a little-endian signed-magnitude
+integer; the remaining bytes do not affect the threshold. A positive threshold
+mitigates dust-based outpoint churn; a zero effective threshold allows any
+positive increase. Negative zero behaves as zero. No `borrow_witness` is
+required, and the complete guard is preserved.
+
+Contracts may require thresholds to be non-negative.
 
 ### `schnorr-signature/v1`
 
@@ -69,7 +74,7 @@ is a one-time authorization bound to its own signing key and advances
 `borrow_guard` when used. A wallet can prepare a finite chain and release links at will to authorize individual borrows.
 
 The idea originates in Rivest and Shamir's [PayWord and MicroMint: Two Simple
-Micropayment Schemes](https://people.csail.mit.edu/rivest/pubs/RS96a.pdf). KCC20
+Micropayment Schemes](https://people.csail.mit.edu/rivest/pubs/RS96a.pdf). KCC-20
 adapts the one-way hash-chain construction by binding each link to a distinct
 one-time Schnorr key.
 
