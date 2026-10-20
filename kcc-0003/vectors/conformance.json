@@ -1,0 +1,325 @@
+{
+  "seed": "000102030405060708090a0b0c0d0e0f",
+  "derivation": [
+    {
+      "id": "mainnet-p2pk-schnorr",
+      "path": "m/44'/111111'/0'/0'/0/0",
+      "public_key_compressed": "023bd098775f14349db55c9544b6ef5e9813c662655616c3caf5152f1ef32247a7",
+      "chain_code": "c28c9fc45765cdf6b168aeebeac81808e25adcb894ebbeaac2c4281fa25c2bcb",
+      "script_public_key": "3bd098775f14349db55c9544b6ef5e9813c662655616c3caf5152f1ef32247a7"
+    },
+    {
+      "id": "mainnet-p2pk-ecdsa",
+      "path": "m/44'/111111'/1'/0'/0/0",
+      "public_key_compressed": "0258b57f2ec05ac730a4509a40f881083fa03722e9a25616ed3367c23330242021",
+      "chain_code": "d9c0616cba37444f966d10b1a5c2cac85cae5693ad2bcd770e346c3ce22e43ad",
+      "script_public_key": "0258b57f2ec05ac730a4509a40f881083fa03722e9a25616ed3367c23330242021"
+    },
+    {
+      "id": "testnet-p2pk-schnorr",
+      "path": "m/44'/111112'/0'/0'/0/0",
+      "public_key_compressed": "024fc9e8d8feb491c9a5e568d0aaa823406597f64672a0f632d59a81efd0bd61e6",
+      "chain_code": "18e432bc583abadbdcb467c45041cb994b0a7a09ec062cdec62e48a736f7ce96",
+      "script_public_key": "4fc9e8d8feb491c9a5e568d0aaa823406597f64672a0f632d59a81efd0bd61e6"
+    },
+    {
+      "id": "mainnet-multisig-schnorr",
+      "path": "m/45'/111111'/0'/0'/0/0",
+      "public_key_compressed": "021925f0afa0bd51b30a11e72152c444f8411162914f4179807abc39849cacaa14",
+      "chain_code": "3e36c8d1f744ea8d6b7b6ed7b62471d1c3c5b80eaaab0a21ac9ab6899e767aa9",
+      "script_public_key": "1925f0afa0bd51b30a11e72152c444f8411162914f4179807abc39849cacaa14"
+    },
+    {
+      "id": "mainnet-multisig-ecdsa",
+      "path": "m/45'/111111'/1'/0'/0/0",
+      "public_key_compressed": "02a153f1db2557b6da9211c3b67accde19b1a9720bac51b401e66d4d7a3065e176",
+      "chain_code": "051067f0d1f4bccd200e6a1fe8e60f446a21fae4f154b023a0cb47bf435f9eb8",
+      "script_public_key": "02a153f1db2557b6da9211c3b67accde19b1a9720bac51b401e66d4d7a3065e176"
+    },
+    {
+      "id": "testnet-multisig-schnorr",
+      "path": "m/45'/111112'/0'/0'/0/0",
+      "public_key_compressed": "032525b3f281dd4395116e06add1b2e1c6db5c746a60eafb389224d8fc9e5094a0",
+      "chain_code": "16c95e3f5915c84c5c66e092c43ae58adac8b0c6091f68d0c9b07ea55fd674d0",
+      "script_public_key": "2525b3f281dd4395116e06add1b2e1c6db5c746a60eafb389224d8fc9e5094a0"
+    },
+    {
+      "id": "testnet-multisig-ecdsa-internal",
+      "path": "m/45'/111112'/1'/1'/1/1",
+      "public_key_compressed": "035f5acba0b8d062837a26da2fa1d71215c457853779a32cba615b4e53734803be",
+      "chain_code": "47a4b44a1b20091b36454e76297898ec0ad79826defc471f6624bcac3fcf1156",
+      "script_public_key": "035f5acba0b8d062837a26da2fa1d71215c457853779a32cba615b4e53734803be"
+    },
+    {
+      "id": "simnet-p2pk-schnorr-internal",
+      "path": "m/44'/111113'/0'/2'/1/7",
+      "public_key_compressed": "0388f52c8e1a5b8a7fb200d614b8b8d3523745af5c9899a67c647e84da51a3afcf",
+      "chain_code": "a02848e8c664310fe41ec290e2933d86c5ef9f4315c095b517d8f3f6638d95dc",
+      "script_public_key": "88f52c8e1a5b8a7fb200d614b8b8d3523745af5c9899a67c647e84da51a3afcf"
+    },
+    {
+      "id": "devnet-p2pk-ecdsa",
+      "path": "m/44'/111114'/1'/0'/0/1",
+      "public_key_compressed": "0342e69f16ea0cb98cd1304dd1c52a7e58ef546084388831da14db15c7a8aa9d03",
+      "chain_code": "7b09de9039bc626829bd629f62db1f6c5a1dd0f426bc7fde8bb534f7865b6d2b",
+      "script_public_key": "0342e69f16ea0cb98cd1304dd1c52a7e58ef546084388831da14db15c7a8aa9d03"
+    },
+    {
+      "id": "maximum-account-and-address-index",
+      "path": "m/45'/111114'/1'/2147483647'/1/2147483647",
+      "public_key_compressed": "03e3d269f10306d0f72326c1cfea2e556b5d2e24ba7ea2f3071a22141ca6d222e6",
+      "chain_code": "5e16d7e79dc541f24eda0ee23ad2f7b50feb03dd502f00a8aa9eb2cd63a6b67d",
+      "script_public_key": "03e3d269f10306d0f72326c1cfea2e556b5d2e24ba7ea2f3071a22141ca6d222e6"
+    }
+  ],
+  "watch_only": {
+    "account_path": "m/44'/111111'/0'/0'",
+    "account_public_key_compressed": "02b141a3b23203323cde6bd5584944cbcc6225af687c62a58f74ec7e1535ebc044",
+    "account_chain_code": "776e93d0e87fa7c63dd472a84b0b5d980b08e507f8927c650843390c6bdebb59",
+    "suffix": [
+      0,
+      0
+    ],
+    "public_key_compressed": "023bd098775f14349db55c9544b6ef5e9813c662655616c3caf5152f1ef32247a7",
+    "chain_code": "c28c9fc45765cdf6b168aeebeac81808e25adcb894ebbeaac2c4281fa25c2bcb",
+    "script_public_key": "3bd098775f14349db55c9544b6ef5e9813c662655616c3caf5152f1ef32247a7"
+  },
+  "multisig": [
+    {
+      "id": "schnorr",
+      "purpose": 45,
+      "coin_type": 111111,
+      "account": 2,
+      "change": 0,
+      "address_index": 7,
+      "cosigners": [
+        {
+          "id": "Alice",
+          "seed": "000102030405060708090a0b0c0d0e0f",
+          "sig_scheme": 0,
+          "public_key_compressed": "02b56f4a2ba21fdf0f51a1863a4ee8107c46dd03c9e32bd1ab65237f99eebcb9fe",
+          "script_public_key": "b56f4a2ba21fdf0f51a1863a4ee8107c46dd03c9e32bd1ab65237f99eebcb9fe"
+        },
+        {
+          "id": "Bob",
+          "seed": "101112131415161718191a1b1c1d1e1f",
+          "sig_scheme": 0,
+          "public_key_compressed": "0278a52308252e896da9c53ab27c788a33bf92a84e864ccee911a169f9bf77c67c",
+          "script_public_key": "78a52308252e896da9c53ab27c788a33bf92a84e864ccee911a169f9bf77c67c"
+        },
+        {
+          "id": "Carol",
+          "seed": "202122232425262728292a2b2c2d2e2f",
+          "sig_scheme": 0,
+          "public_key_compressed": "03fa682483a240a75f3488fc64f7938f6c1a40bf3b75c9f1e1f45e56ad81cece63",
+          "script_public_key": "fa682483a240a75f3488fc64f7938f6c1a40bf3b75c9f1e1f45e56ad81cece63"
+        }
+      ],
+      "sorted_cosigners": [
+        "Bob",
+        "Alice",
+        "Carol"
+      ]
+    },
+    {
+      "id": "ecdsa",
+      "purpose": 45,
+      "coin_type": 111111,
+      "account": 2,
+      "change": 0,
+      "address_index": 7,
+      "cosigners": [
+        {
+          "id": "Alice",
+          "seed": "000102030405060708090a0b0c0d0e0f",
+          "sig_scheme": 1,
+          "public_key_compressed": "026c2ae05ac0df478b27781431b2f1dd93f9ce5c494f63ad11128a8fc74a9c26d2",
+          "script_public_key": "026c2ae05ac0df478b27781431b2f1dd93f9ce5c494f63ad11128a8fc74a9c26d2"
+        },
+        {
+          "id": "Bob",
+          "seed": "101112131415161718191a1b1c1d1e1f",
+          "sig_scheme": 1,
+          "public_key_compressed": "037d4128a8d2ac7594d828665f2b1a1387a5177af27dea7032841222a18d6cccc1",
+          "script_public_key": "037d4128a8d2ac7594d828665f2b1a1387a5177af27dea7032841222a18d6cccc1"
+        },
+        {
+          "id": "Carol",
+          "seed": "202122232425262728292a2b2c2d2e2f",
+          "sig_scheme": 1,
+          "public_key_compressed": "02ba22cc203c71ce1302503d7d80a5f3d862421a2cfd49dac2f35424e19b3a0d5f",
+          "script_public_key": "02ba22cc203c71ce1302503d7d80a5f3d862421a2cfd49dac2f35424e19b3a0d5f"
+        }
+      ],
+      "sorted_cosigners": [
+        "Alice",
+        "Carol",
+        "Bob"
+      ]
+    },
+    {
+      "id": "mixed",
+      "purpose": 45,
+      "coin_type": 111111,
+      "account": 2,
+      "change": 0,
+      "address_index": 7,
+      "cosigners": [
+        {
+          "id": "Alice",
+          "seed": "000102030405060708090a0b0c0d0e0f",
+          "sig_scheme": 0,
+          "public_key_compressed": "02b56f4a2ba21fdf0f51a1863a4ee8107c46dd03c9e32bd1ab65237f99eebcb9fe",
+          "script_public_key": "b56f4a2ba21fdf0f51a1863a4ee8107c46dd03c9e32bd1ab65237f99eebcb9fe"
+        },
+        {
+          "id": "Bob",
+          "seed": "101112131415161718191a1b1c1d1e1f",
+          "sig_scheme": 0,
+          "public_key_compressed": "0278a52308252e896da9c53ab27c788a33bf92a84e864ccee911a169f9bf77c67c",
+          "script_public_key": "78a52308252e896da9c53ab27c788a33bf92a84e864ccee911a169f9bf77c67c"
+        },
+        {
+          "id": "Carol",
+          "seed": "202122232425262728292a2b2c2d2e2f",
+          "sig_scheme": 1,
+          "public_key_compressed": "02ba22cc203c71ce1302503d7d80a5f3d862421a2cfd49dac2f35424e19b3a0d5f",
+          "script_public_key": "02ba22cc203c71ce1302503d7d80a5f3d862421a2cfd49dac2f35424e19b3a0d5f"
+        }
+      ],
+      "sorted_cosigners": [
+        "Carol",
+        "Bob",
+        "Alice"
+      ]
+    },
+    {
+      "id": "mixed-other-address",
+      "purpose": 45,
+      "coin_type": 111111,
+      "account": 2,
+      "change": 0,
+      "address_index": 9,
+      "cosigners": [
+        {
+          "id": "Alice",
+          "seed": "000102030405060708090a0b0c0d0e0f",
+          "sig_scheme": 0,
+          "public_key_compressed": "026770b8df238b459ce1a81b8113ac0fe39e33427eb4d4f5c72b364e199c117ce7",
+          "script_public_key": "6770b8df238b459ce1a81b8113ac0fe39e33427eb4d4f5c72b364e199c117ce7"
+        },
+        {
+          "id": "Bob",
+          "seed": "101112131415161718191a1b1c1d1e1f",
+          "sig_scheme": 0,
+          "public_key_compressed": "02efd95b7c2891c0b3faab80c178b7902517bab1fcd298b71ba90e0902daeecc25",
+          "script_public_key": "efd95b7c2891c0b3faab80c178b7902517bab1fcd298b71ba90e0902daeecc25"
+        },
+        {
+          "id": "Carol",
+          "seed": "202122232425262728292a2b2c2d2e2f",
+          "sig_scheme": 1,
+          "public_key_compressed": "021f5060ecc4e1550a259457c166c637df2ab45ce3fd5d6bf8b9d3f4d6f096c416",
+          "script_public_key": "021f5060ecc4e1550a259457c166c637df2ab45ce3fd5d6bf8b9d3f4d6f096c416"
+        }
+      ],
+      "sorted_cosigners": [
+        "Carol",
+        "Alice",
+        "Bob"
+      ]
+    }
+  ],
+  "invalid_paths": [
+    {
+      "path": "m/44'/111111'/0'/0'/0",
+      "reason": "Missing address-index level"
+    },
+    {
+      "path": "m/44'/111111'/0'/0'/0/0/0",
+      "reason": "Extra child level"
+    },
+    {
+      "path": "m/44/111111'/0'/0'/0/0",
+      "reason": "Non-hardened purpose"
+    },
+    {
+      "path": "m/44'/111111/0'/0'/0/0",
+      "reason": "Non-hardened coin type"
+    },
+    {
+      "path": "m/44'/111111'/0/0'/0/0",
+      "reason": "Non-hardened signature scheme"
+    },
+    {
+      "path": "m/44'/111111'/0'/0/0/0",
+      "reason": "Non-hardened account"
+    },
+    {
+      "path": "m/44'/111111'/0'/0'/0'/0",
+      "reason": "Hardened change"
+    },
+    {
+      "path": "m/44'/111111'/0'/0'/0/0'",
+      "reason": "Hardened address index"
+    },
+    {
+      "path": "m/46'/111111'/0'/0'/0/0",
+      "reason": "Reserved purpose"
+    },
+    {
+      "path": "m/44'/111115'/0'/0'/0/0",
+      "reason": "Reserved coin type"
+    },
+    {
+      "path": "m/44'/111111'/2'/0'/0/0",
+      "reason": "Reserved signature scheme"
+    },
+    {
+      "path": "m/44'/111111'/0'/0'/2/0",
+      "reason": "Invalid change"
+    },
+    {
+      "path": "m/44'/111111'/0'/2147483648'/0/0",
+      "reason": "Account component exceeds 2^31 - 1"
+    },
+    {
+      "path": "m/44'/111111'/0'/0'/0/2147483648",
+      "reason": "Address index exceeds 2^31 - 1"
+    }
+  ],
+  "discovery": {
+    "search_spaces": [
+      {
+        "purpose": 44,
+        "coin_type": 111111,
+        "sig_scheme": 0,
+        "has_history": false
+      },
+      {
+        "purpose": 44,
+        "coin_type": 111111,
+        "sig_scheme": 1,
+        "has_history": true
+      },
+      {
+        "purpose": 45,
+        "coin_type": 111112,
+        "sig_scheme": 0,
+        "has_history": true
+      }
+    ],
+    "expected_discovered": [
+      [
+        44,
+        111111,
+        1
+      ],
+      [
+        45,
+        111112,
+        0
+      ]
+    ]
+  }
+}
